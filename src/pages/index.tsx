@@ -65,6 +65,10 @@ const Home: NextPage = () => {
     })
   }, []);
 
+  //削除関数
+  const handleDeleteTodo = (targetTodo)=> {
+    
+  }
 
   return (
     <>
@@ -180,6 +184,7 @@ const Home: NextPage = () => {
                 />
               </Link>
 
+              {/* 編集アイコン */}
               <Link href={`/${post.id}/edit`}>
                 <IconButton
                   variant='outline'
@@ -190,6 +195,7 @@ const Home: NextPage = () => {
                 />
               </Link>
 
+              {/* 削除アイコン */}
               <IconButton
                 variant='outline'
                 colorScheme='teal'
