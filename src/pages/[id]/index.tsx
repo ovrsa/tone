@@ -28,8 +28,8 @@ const TodoId: NextPage = () => {
               {post.title}
             </Box>
 
-            <Box key={post.text}>
-              {post.text}
+            <Box key={post.detail}>
+              {post.detail}
             </Box>
           </>
         ))}
