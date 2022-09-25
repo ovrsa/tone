@@ -25,20 +25,35 @@ import {
 } from "@chakra-ui/react"
 import db from "../hooks/firebase"
 import { useEffect } from 'react'
-import { collection, getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore"
+import {
+  collection,
+  getDocs,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+  deleteDoc
+} from "firebase/firestore"
 import { useRecoilState } from "recoil";
 import { postsState } from "../atoms/atom"
+
+// firebaseのコレクションから複数のドキュメントを取得する
 
 const q = query(
   collection(db, 'posts'),
   where('isDraft', '==', false),
   where('isTrash', '==', false),
+  // ---------------------------------------------------------
   orderBy('create')
 )
 
 const Home: NextPage = () => {
+  // recoilでatomから引っ張ってきたグローバルの値
   const [posts, setPosts] = useRecoilState(postsState);
 
+  // recoilで取得した値をonSnapshotで取得、mapで処理を回して全て表示
+  // ※onSnapshotを実行すると最初に全てのドキュメントを取得するのでuseEffectで制御
   useEffect(() => {
     const unSub = onSnapshot(q, (querySnapshot) => {
       setPosts(
@@ -57,6 +72,7 @@ const Home: NextPage = () => {
     const postData = collection(db, "posts");
     getDocs(postData).then((snapShot) => {
       setPosts(snapShot.docs.map((doc) => ({ ...doc.data() })));
+      // ...: スプレッド記法、式を複数の要素に展開して、それぞれ関数呼び出す
     });
 
     // リアルタイムで取得
@@ -66,13 +82,15 @@ const Home: NextPage = () => {
   }, []);
 
   //削除関数
-  const handleDeleteTodo = (targetTodo)=> {
-    
+  const handleDeleteTodo = async (targetPost: any) => {
+    console.log(targetPost)
+    setPosts(posts.filter((post: any) => post !== targetPost))
+    // postsにfilterをかけてクリックされたpostを抽出
+    await deleteDoc(doc(db, targetPost));
   }
 
   return (
     <>
-
       {/* ヘッダー */}
       <Menu>
         <MenuButton
@@ -201,6 +219,7 @@ const Home: NextPage = () => {
                 colorScheme='teal'
                 aria-label='DeleteIcon'
                 border="0"
+                onClick={() => handleDeleteTodo(post)}
                 icon={<DeleteIcon />}
               />
             </HStack>
