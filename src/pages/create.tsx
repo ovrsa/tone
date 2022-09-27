@@ -1,93 +1,61 @@
-import type { NextPage } from 'next'
 import React from 'react'
-import Link from 'next/link'
-import {  } from '@chakra-ui/icons'
-import { Container, Stack, Box, Input, Textarea, Button } from "@chakra-ui/react"
-import {doc, serverTimestamp, setDoc} from 'firebase/firestore'
+import { } from '@chakra-ui/icons'
+import { Box, Input, Textarea, Button, Container } from "@chakra-ui/react"
+import { doc, setDoc } from 'firebase/firestore'
 import db from "../hooks/firebase"
-import {v4 as uuidv4} from "uuid"
+import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/router'
+import { ITodoData } from '../interfaces/todo'
 
 export default function AddTodoForm() {
   const router = useRouter()
-  // const unCreatable = todo === ''
-  const newTask = async (
-    inputData:string,
-    textData:string,
-    priorityData:string,)  => {
-    //Firebase ver9 compliant (modular)
-    const id = uuidv4();
-    const post = setDoc(doc(db, "posts",id), {
-      id,
-      title:inputData,
-      text:textData,
-      priority:priorityData,
-      create: serverTimestamp(),
-      update: serverTimestamp()
-    });
+
+  /**
+   * タスクを追加する
+   * @param postData 送信するデータ
+   */
+  const postAddTask = async (postData: ITodoData) => {
+    /**
+     * Firebaseに送信する
+     */
+    const post = setDoc(doc(db, "posts", postData.id), postData);
+
+    /**
+     * Firebase送信後の処理
+     */
     post.then(() => {
-      router.push("./todos")
-      uuidv4();
+      // ホームに遷移する
+      router.push("./")
     })
   };
 
-  const onAddFormSubmit = (e:any) => {
-    // formを使っているときだけ
+  /**
+   * 変更イベントで呼び出される関数
+   * @param e HTMLイベント
+   */
+  const onAddFormSubmit = (e: any) => {
+    // 本来のSubmitの機能を停止
     e.preventDefault();
-    const input = e.target.elements["title"].value
-    const text = e.target.elements["detail"].value
-    const priority = e.target.elements["priority"].value
-    // const priority = e.target.element[2].value
-    // console.log(e.target["priority"].value)
-    newTask(input,text,priority)
+
+    const postData: ITodoData = {
+      id: uuidv4(),
+      title: e.target.elements["title"].value,
+      detail: e.target.elements["detail"].value
+    }
+    postAddTask(postData);
   }
 
-let random = Math.random() * 11;
-console.log( random );
-
   return (
-    <>
-      <Box>
-        <Box>Todo作成</Box>
-      </Box>
-
+    <Container>
       <form onSubmit={onAddFormSubmit}>
-      <Box>Create</Box>
-      <label htmlFor="todo"></label>
-
-        <Box>タイトル</Box>
-        <Input focusBorderColor='lime' placeholder='タイトル' />
-
-        <Box>詳細</Box>
-
-        <Textarea placeholder='テキスト' />
-
-        
-        <Button colorScheme='teal'>追加</Button>
-
-      <Link href="./">
-      </Link>
+        <Box>タスクの生成</Box>
+        <label htmlFor="todo"></label>
+        <Input name="title" focusBorderColor='lime' placeholder='タイトル' autoFocus />
+        <Textarea name="detail" placeholder='テキスト' />
+        <Button type="submit" colorScheme='teal'>追加</Button>
       </form>
-    </>
+    </Container>
   )
 }
 
-export {}
-
-{/* <Container>
-<Stack spacing={3}>
-
-<Box>create</Box>
-<Input focusBorderColor='lime' placeholder='タイトル' />
-
-<Textarea placeholder='テキスト' />
-
-<Input
- placeholder="時間"
- size="md"
- type="datetime-local"
-/>
-<Button colorScheme='teal'>追加</Button>
-
-</Stack>
-</Container> */}
+export { }
