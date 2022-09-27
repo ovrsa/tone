@@ -1,8 +1,8 @@
-import firebase from 'firebase/app';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { getAuth } from 'firebase/auth'
+import {getAuth} from "firebase/auth"
+import { GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_APIKEY,
@@ -15,6 +15,9 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig)
 export const storage = getStorage();
-export const auth = getAuth();
 const db = getFirestore();
-export default db;
+const auth = getAuth();
+// ↓クリックした際にアカウントの選定を行う
+const provider = new GoogleAuthProvider()
+export { auth, provider };
+export default db;  
