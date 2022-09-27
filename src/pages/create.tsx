@@ -1,9 +1,9 @@
 import React from 'react'
 import { } from '@chakra-ui/icons'
 import { Box, Input, Textarea, Button, Container } from "@chakra-ui/react"
-import {doc, setDoc} from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import db from "../hooks/firebase"
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/router'
 import { ITodoData } from '../interfaces/todo'
 
@@ -19,7 +19,7 @@ export default function AddTodoForm() {
      * Firebaseに送信する
      */
     const post = setDoc(doc(db, "posts", postData.id), postData);
-    
+
     /**
      * Firebase送信後の処理
      */
@@ -33,7 +33,7 @@ export default function AddTodoForm() {
    * 変更イベントで呼び出される関数
    * @param e HTMLイベント
    */
-  const onAddFormSubmit = (e:any) => {
+  const onAddFormSubmit = (e: any) => {
     // 本来のSubmitの機能を停止
     e.preventDefault();
 
@@ -55,7 +55,7 @@ export default function AddTodoForm() {
         <Button type="submit" colorScheme='teal'>追加</Button>
       </form>
     </Container>
-    )
+  )
 }
 
-export {}
+export { }
