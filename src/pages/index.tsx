@@ -36,7 +36,8 @@ import {
   deleteDoc
 } from "firebase/firestore"
 import { useRecoilState } from "recoil";
-import { postsState } from "../atoms/atom"
+import { postsState } from "@atoms/atom"
+import { ITodoData } from "@interfaces/todo"
 
 // firebaseのコレクションから複数のドキュメントを取得する
 
@@ -82,11 +83,11 @@ const Home: NextPage = () => {
   }, []);
 
   //削除関数
-  const handleDeleteTodo = async (targetPost: any) => {
+  const handleDeletePost = async (targetPost: ITodoData) => {
     console.log(targetPost)
     setPosts(posts.filter((post: any) => post !== targetPost))
     // postsにfilterをかけてクリックされたpostを抽出
-    await deleteDoc(doc(db, targetPost));
+    await deleteDoc(doc(db, "posts", targetPost.id));
   }
 
   return (
@@ -219,7 +220,7 @@ const Home: NextPage = () => {
                 colorScheme='teal'
                 aria-label='DeleteIcon'
                 border="0"
-                onClick={() => handleDeleteTodo(post)}
+                onClick={() => handleDeletePost(post)}
                 icon={<DeleteIcon />}
               />
             </HStack>
