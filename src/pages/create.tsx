@@ -50,7 +50,7 @@ export default function AddTodoForm() {
       <form onSubmit={onAddFormSubmit}>
         <Box>タスクの生成</Box>
         <label htmlFor="todo"></label>
-        <Input name="title" focusBorderColor='lime' placeholder='タイトル' autoFocus />
+        <Input name="title" placeholder='タイトル' autoFocus />
         <Textarea name="detail" placeholder='テキスト' />
         <Button type="submit" colorScheme='teal'>追加</Button>
       </form>
