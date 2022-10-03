@@ -2,10 +2,13 @@ import type { NextPage } from 'next'
 import Link from 'next/link'
 import {
   AddIcon,
+  CheckCircleIcon,
+  ChevronDownIcon,
   DeleteIcon,
   EditIcon,
   ExternalLinkIcon,
   HamburgerIcon,
+  MinusIcon,
   SearchIcon,
   ViewIcon,
   ViewOffIcon
@@ -13,15 +16,25 @@ import {
 import {
   Menu,
   Box,
-  Heading,
-  useColorModeValue,
   Flex,
   HStack,
   MenuButton,
   IconButton,
   MenuList,
   MenuItem,
-  VStack
+  VStack,
+  Input,
+  Checkbox,
+  Divider,
+  Stack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
 } from "@chakra-ui/react"
 import db from "../hooks/firebase"
 import { useEffect } from 'react'
@@ -38,19 +51,19 @@ import {
 import { useRecoilState } from "recoil";
 import { postsState } from "@atoms/atom"
 import { ITodoData } from "@interfaces/todo"
+import { ControlbarData } from '@components/ControlbarData'
+import { SidebarData } from '@components/SidebarData'
 
 // firebaseのコレクションから複数のドキュメントを取得する
-
 const q = query(
   collection(db, 'posts'),
   where('isDraft', '==', false),
   where('isTrash', '==', false),
-  // ---------------------------------------------------------
   orderBy('create')
 )
 
 const Home: NextPage = () => {
-  // recoilでatomから引っ張ってきたグローバルの値
+  // recoilでatomから取得したグローバルの値
   const [posts, setPosts] = useRecoilState(postsState);
 
   // recoilで取得した値をonSnapshotで取得、mapで処理を回して全て表示
@@ -84,7 +97,6 @@ const Home: NextPage = () => {
 
   //削除関数
   const handleDeletePost = async (targetPost: ITodoData) => {
-    console.log(targetPost)
     setPosts(posts.filter((post: any) => post !== targetPost))
     // postsにfilterをかけてクリックされたpostを抽出
     await deleteDoc(doc(db, "posts", targetPost.id));
@@ -92,48 +104,152 @@ const Home: NextPage = () => {
 
   return (
     <>
-      {/* ヘッダー */}
+      {/* コントロールバー */}
+      <div className='Controlbar'>
+        <ul className='ControlbarList'>
+          {/* keyは配列の割り振られた点字の番号 */}
+          {ControlbarData.map((value, key) => {
+            return (
+              <li
+                key={key}
+                // pathnameの値がvalueのlinkと等しければactiveを付与、異なれば""に
+                // id={window.location.pathname == value.link ? "active" : ""}
+                className="row"
+                onClick={() => {
+                  // ControlbarDataのvalueのlinkをwindowのパスネームに割り当てる
+                  window.location.pathname = value.link;
+                }}>
+                {/* ControlbarDataのvalueの中のicon */}
+                <div id="icon">{value.icon}</div>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+      <Button>Open Modal</Button>
+      <Modal>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input name="title" placeholder='検索して特定のタスクを見つける' autoFocus />
+
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* TOP */}
+      <div className='Sidebar'>
+        <ul className='SidebarList'>
+          {/* keyは配列の割り振られた点字の番号 */}
+          {SidebarData.map((value, key) => {
+            return (
+              <li
+                key={key}
+                // pathnameの値がvalueのlinkと等しければactiveを付与、異なれば""に
+                // id={window.location.pathname == value.link ? "active" : ""}
+                className="row"
+                onClick={() => {
+                  // SidebarDataのvalueのlinkをwindowのパスネームに割り当てる
+                  window.location.pathname = value.link;
+                }}>
+                {/* SidebarDataのvalueの中のicon */}
+                <div id="icon">{value.icon}</div>
+                <div id="title">{value.title}</div>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+
+      {/* Titlebar */}
+      <div className='Mainbar'>
+        <form>
+          <label htmlFor="todo"></label>
+          <Box
+            color="#ffffff"
+            fontWeight='semibold'
+            fontSize='large'
+          >今日(TOPの内容によって変更)</Box>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              aria-label='Options'
+              icon={<HamburgerIcon />}
+              color="#ffffff"
+            />
+            <MenuList>
+              <MenuItem icon={<CheckCircleIcon />}>
+                完了済を隠す
+              </MenuItem>
+              <MenuItem icon={<MinusIcon />}>
+                詳細を隠す
+              </MenuItem>
+            </MenuList>
+          </Menu>
+          <Input name="title" placeholder='+ 本日のタスクを追加します。Enterキーを押して保存します。' autoFocus />
+        </form>
+        {/* ポスト */}
+        <Stack direction='row' h='100px' p={4}>
+          <Divider orientation='vertical' />
+          <Box>title</Box>
+          <Box
+            color='gray.500'
+            fontWeight='semibold'
+            fontSize='xs'
+          >
+            sample
+          </Box>
+        </Stack>
+      </div >
+
+      {/* Detailbar */}
+      {/* 予定共有 */}
+      <Checkbox
+        size='sm'
+        color='gray.500'
+        fontWeight='semibold'
+        fontSize='xs'
+      >
+        予定を共有しない
+      </Checkbox>
+
+      {/* 重要度 */}
       <Menu>
         <MenuButton
-          as={IconButton}
-          aria-label='Options'
-          icon={<HamburgerIcon />}
-          variant='outline'
-        />
+          px={2}
+          py={1}
+          transition='all 0.2s'
+          borderRadius='md'
+          borderWidth='1px'
+          _hover={{ bg: 'gray.400' }}
+          _expanded={{ bg: 'blue.400' }}
+          _focus={{ boxShadow: 'outline' }}
+        >
+          優先度
+          <ChevronDownIcon />
+        </MenuButton>
         <MenuList>
-          <MenuItem icon={<AddIcon />} command='⌘T'>
-            Home
-          </MenuItem>
-          <MenuItem icon={<ExternalLinkIcon />} command='⌘N'>
-            Setting
-          </MenuItem>
-          <MenuItem icon={<ExternalLinkIcon />} command='⌘N'>
-            View Source
-          </MenuItem>
-          <Link href="./signup">
-            <MenuItem icon={<ExternalLinkIcon />} command='⌘N'>
-              Logout
-            </MenuItem>
-          </Link>
+          <MenuItem>高</MenuItem>
+          <MenuItem>中</MenuItem>
+          <MenuItem>低</MenuItem>
+          <MenuItem>無</MenuItem>
         </MenuList>
       </Menu>
+      <Divider />
+      <Box
+        fontWeight='semibold'
+      >title</Box>
+      <Box>detail(常に修正可)</Box>
 
-      <Flex
-        borderRadius="lg"
-        bg={useColorModeValue('whiteAlpha.500', 'whiteAlpha.200')}
-        p={3}
-        mt={6}
-        mb={6}
-        justify="center"
-      ></Flex>
-      <Box display={{ md: "flex" }}></Box>
-      <Box flexGrow={1}>
-        <Heading as="h2" variant="page-title">
-          Reminder App
-        </Heading>
-        <Box>A reminder app that works with Google Calendar</Box>
-      </Box>
-
+      {/* ---------------------------------------------------------------- */}
       {/* コントロールパネル */}
       <HStack spacing='24px'>
         <Flex
@@ -142,7 +258,6 @@ const Home: NextPage = () => {
           mb={6}
           justify="center"
         >
-          {/* <NextLink href="/setting" passHref> */}
 
           <Link href="./create">
             <IconButton
