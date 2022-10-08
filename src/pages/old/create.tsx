@@ -2,10 +2,10 @@ import React from 'react'
 import { } from '@chakra-ui/icons'
 import { Box, Input, Textarea, Button, Container } from "@chakra-ui/react"
 import { doc, setDoc } from 'firebase/firestore'
-import db from "../hooks/firebase"
+import db from "../../hooks/firebase"
 import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/router'
-import { ITodoData } from '../interfaces/todo'
+import { ITodoData } from '../../interfaces/todo'
 
 export default function AddTodoForm() {
   const router = useRouter()
