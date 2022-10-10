@@ -1,126 +1,66 @@
-import React from 'react';
-import { useState } from "react";
 import {
   Flex,
-  Heading,
-  Input,
-  Button,
-  InputGroup,
-  Stack,
-  InputLeftElement,
   Box,
-  Avatar,
   FormControl,
-  FormHelperText,
-  InputRightElement
-} from "@chakra-ui/react";
-import {auth} from '../hooks/firebase';
-// ↓firebase v9の際のログイン機能には必須
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import Link from 'next/link';
+  FormLabel,
+  Input,
+  Checkbox,
+  Stack,
+  Link,
+  Button,
+  Heading,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 
-const Signin = () => {
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    
-    const { email, password } = event.target.elements;
-    signInWithEmailAndPassword(auth, email.value, password.value)
-      .then((user) => {
-        console.log('ログイン成功=', user.user.uid)
-      })
-      .catch((error) => {
-        console.error(error)
-        alert(error.message)
-      })
-  }
-
-  // パスワードshow
-  const [showPassword, setShowPassword] = useState(false);
-  const handleShowClick = () => setShowPassword(!showPassword);
-
+export default function SimpleCard() {
   return (
     <Flex
-      flexDirection="column"
-      width="100wh"
-      height="100vh"
-      justifyContent="center"
-      alignItems="center"
-    >
-      <Stack
-        flexDir="column"
-        mb="2"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Avatar bg="teal" />
-        <Heading color="teal">Sign In</Heading>
-        <Box minW={{ base: "90%", md: "468px" }}>
-            <Stack
-              spacing={4}
-              p="1rem"
-              backgroundColor="whiteAlpha.100"
-              boxShadow="md"
-            >
-            <form onSubmit={handleSubmit}>
-              {/* email */}
-              <FormControl>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                  />
-                  <Input 
-                  type="email" 
-                  name="email"
-                  placeholder="email address" 
-                  />
-                </InputGroup>
-              </FormControl>
-
-              {/* pasword */}
-              <FormControl>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    color="black"
-                  />
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Password"
-                  />
-                  <InputRightElement width="4.5rem">
-                    <Button h="1.75rem" size="sm" onClick={handleShowClick}>
-                      {showPassword ? "Hide" : "Show"}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-                <FormHelperText textAlign="right">
-                </FormHelperText>
-              </FormControl>
-
-              {/* submit button */}
+      minH={'100vh'}
+      align={'center'}
+      justify={'center'}
+      bg={useColorModeValue('gray.50', 'gray.800')}>
+      <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+        <Stack align={'center'}>
+          <Heading fontSize={'4xl'}>Sign in to your account</Heading>
+          <Text fontSize={'lg'} color={'gray.600'}>
+            to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
+          </Text>
+        </Stack>
+        <Box
+          rounded={'lg'}
+          bg={useColorModeValue('white', 'gray.700')}
+          boxShadow={'lg'}
+          p={8}>
+          <Stack spacing={4}>
+            <FormControl id="email">
+              <FormLabel>Email address</FormLabel>
+              <Input type="email" />
+            </FormControl>
+            <FormControl id="password">
+              <FormLabel>Password</FormLabel>
+              <Input type="password" />
+            </FormControl>
+            <Stack spacing={10}>
+              <Stack
+                direction={{ base: 'column', sm: 'row' }}
+                align={'start'}
+                justify={'space-between'}>
+                <Checkbox>Remember me</Checkbox>
+                <Link color={'blue.400'}>Forgot password?</Link>
+              </Stack>
               <Button
-                borderRadius={0}
-                type="submit"
-                variant="solid"
-                colorScheme="teal"
-                width="full"
-              >
-                Login
+                bg={'blue.400'}
+                color={'white'}
+                _hover={{
+                  bg: 'blue.500',
+                }}>
+                Sign in
               </Button>
-            </form>
             </Stack>
+          </Stack>
         </Box>
       </Stack>
-
-      {/* signupへ遷移 */}
-      <Box>
-        <Link color="teal.500" href="./signup">
-          Sign Up
-        </Link>
-      </Box>
     </Flex>
   );
-};
-
-export default Signin;
+}

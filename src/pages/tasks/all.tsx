@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import Link from 'next/link'
 import {
   IconButton,
   Box,
@@ -6,7 +7,6 @@ import {
   Flex,
   Icon,
   useColorModeValue,
-  Link,
   Drawer,
   DrawerContent,
   Text,
@@ -22,9 +22,15 @@ import {
 import { IconType } from 'react-icons';
 import {
   AddIcon,
+  ArrowRightIcon,
+  CheckCircleIcon,
+  CheckIcon,
+  DeleteIcon,
   EditIcon,
-  SearchIcon
+  SearchIcon,
+  TimeIcon
 } from '@chakra-ui/icons';
+import { footer } from "../../components/footer"
 
 // LinkItemの型
 interface LinkItemProps {
@@ -32,30 +38,38 @@ interface LinkItemProps {
   icon: IconType;
 }
 // LinkItemの見た目データ
+// Array: 配列操作を行うための
+// LinkItemProps: LinkItemsのTS型
 const LinkItems: Array<LinkItemProps> = [
-  { name: 'Add', icon: AddIcon },
+  { name: 'Tasks', icon: AddIcon },
   { name: 'Memo', icon: EditIcon },
   { name: 'Search', icon: SearchIcon },
 ];
 
+// Sidebar関数
+// children:全ての子要素を取得するプロパティ
 export default function SimpleSidebar({ children }: { children: ReactNode }) {
   // isOpen: 折りたたみを発火させる際のトリガー
   // useDisclosure: chakra-uiのカスタムフック、開く、閉じるの支援
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    // minH:要素の最小高 
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+    // minH:要素の最小高
+    <Box
+      minH="100vh"
+      bg={useColorModeValue('gray.100', 'gray.900')}
+    >
       <SidebarContent
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
       />
-      {/* Menuが折りたたまれた際の動き */}
+      {/* Menuを折りたたむ際の動作 */}
       <Drawer
         autoFocus={false}
         isOpen={isOpen}
         placement="left"
         onClose={onClose}
         returnFocusOnClose={false}
+        // onOverlayClick:モーダルのようにポップアップさせる
         onOverlayClick={onClose}
         size="xs">
         <DrawerContent>
@@ -68,11 +82,16 @@ export default function SimpleSidebar({ children }: { children: ReactNode }) {
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         {children}
+        <MainBar />
+        <Content />
+        <footer />
       </Box>
     </Box>
   );
 }
 
+// SidebarPropsの型
+// extends: extendsキーワードを用いることでジェネリクスの型を特定の型に限定することができる
 interface SidebarProps extends BoxProps {
   // void:（引数とか戻り値とかが）ないことを表す目印として使われる用語
   // 引数や戻り値とかがないときに「ない」の目印として使われる
@@ -82,22 +101,24 @@ interface SidebarProps extends BoxProps {
 // ...rest:
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
+
     <Box
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: 60 }}
+      w={{ base: 'full', md: 60 }
+      }
       // pos:positionの事 fixed:画面の決まった位置に固定する
       pos="fixed"
       h="full"
       {...rest}>
       {/* justifyContent: フレックスコンテナの主軸およびグリッドコンテナーのインライン軸に沿って、中身のアイテムの間や周囲に間隔を配置する*/}
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+      < Flex h="20" alignItems="center" mx="8" justifyContent="space-between" >
         {/* VStack:縦方向に要素を並べる */}
         <VStack>
           {/* Avatar:アイコン */}
           <Avatar
-            mt={8}
+            mt={5}
             size={'sm'}
             src={
               'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
@@ -107,19 +128,71 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold" >
             Tone
           </Text>
-        </VStack>
+        </VStack >
         {/* menuを閉じる際の×アイコン */}
-        <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
-      </Flex>
-      {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} mt={5} >
-          {link.name}
-        </NavItem>
-      ))}
-    </Box>
+        < CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+      </Flex >
+      {
+        LinkItems.map((link) => (
+          <NavItem key={link.name} icon={link.icon} mt={1} >
+            <Link href={`../${link.name}/All`}>
+              {link.name}
+            </Link>
+          </NavItem>
+        ))
+      }
+    </Box >
   );
 };
 
+
+// LinkItemの見た目データ
+const MainItems = [
+  { name: 'All', icon: CheckIcon },
+  { name: 'Today', icon: TimeIcon },
+  { name: 'Tomorrow', icon: ArrowRightIcon },
+  { name: 'Completed', icon: CheckCircleIcon },
+  { name: 'Trash', icon: DeleteIcon },
+];
+
+const MainBar = () => {
+  return (
+    <Box
+      bg={useColorModeValue('white', 'gray.900')}
+      borderRight="1px"
+      borderRightColor={useColorModeValue('gray.200', 'gray.700')}
+      w={{ base: 'full', md: 60 }
+      }
+      // pos:positionの事 fixed:画面の決まった位置に固定する
+      pos="fixed"
+      h="full"
+    >
+      {/* justifyContent: フレックスコンテナの主軸およびグリッドコンテナーのインライン軸に沿って、中身のアイテムの間や周囲に間隔を配置する*/}
+      < Flex alignItems="center" mx="8" justifyContent="space-between" >
+      </Flex >
+      {
+        MainItems.map((link) => (
+          <NavItem key={link.name} icon={link.icon} mt={1} >
+            <Link href={`../Tasks/${link.name}`}>
+              {link.name}
+            </Link>
+          </NavItem>
+        ))
+      }
+    </Box >
+  )
+}
+
+const Content = () => {
+  return (
+    <>
+      <Box>aaaaaaaa</Box>
+      <Box></Box>
+    </>
+  )
+}
+
+// NavItemPropsの型
 interface NavItemProps extends FlexProps {
   icon: IconType;
 }
@@ -127,7 +200,11 @@ interface NavItemProps extends FlexProps {
 // NavItemの呼び出し関数
 const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
-    <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link href="#"
+      style={{ textDecoration: 'none' }
+      }
+      _focus={{ boxShadow: 'none' }}
+    >
       <Flex
         align="center"
         p="4"
@@ -152,10 +229,12 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
         )}
         {children}
       </Flex>
-    </Link>
+    </Link >
   );
 };
 
+// Mobile
+// MobilePropsの型
 interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
@@ -178,8 +257,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         icon={<FiMenu />}
       />
 
-      <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
-        Logo
+      <Text
+        fontSize="2xl"
+        ml="8"
+        fontFamily="monospace"
+        fontWeight="bold"
+      >
+        Tone
       </Text>
     </Flex>
   );

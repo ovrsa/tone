@@ -1,9 +1,9 @@
 import React from 'react'
 
-const all = () => {
+const All = () => {
   return (
-    <div>all</div>
+    <div>All</div>
   )
 }
 
-export default all
+export default All
