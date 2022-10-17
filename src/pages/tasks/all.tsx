@@ -81,11 +81,11 @@ export default function SimpleSidebar({ children }: { children: ReactNode }) {
       {/* mobilenav */}
       {/* display={{}}: レスポンシブ構文 */}
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-        <Flex ml={{ base: 0, md: 60 }} p="0">
-          {children}
-          <MainBar />
-          <Content />
-        </Flex>
+      <Flex ml={{ base: 0, md: 60 }} p="0">
+        {children}
+        <MainBar />
+        <Content />
+      </Flex>
     </Box>
   );
 }
@@ -146,7 +146,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   );
 };
 
-
 // LinkItemの見た目データ
 const MainItems = [
   { name: 'All', icon: CheckIcon },
@@ -195,9 +194,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
     <Link href="#"
       style={{ textDecoration: 'none' }
-      }
-      _focus={{ boxShadow: 'none' }}
-    >
+      }>
       <Flex
         align="center"
         p="4"
