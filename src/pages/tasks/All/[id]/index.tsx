@@ -30,7 +30,9 @@ import {
   SearchIcon,
   TimeIcon
 } from '@chakra-ui/icons';
-import { Content } from "../../components/content"
+import { Content } from '@components/content';
+import { Detail } from '@components/detail';
+
 
 // LinkItemの型
 interface LinkItemProps {
@@ -55,7 +57,6 @@ export default function SimpleSidebar({ children }: { children: ReactNode }) {
   return (
     // minH:要素の最小高
     <Box
-      p={"0"}
       minH="100vh"
       bg={useColorModeValue('gray.100', 'gray.900')}
     >
@@ -81,11 +82,13 @@ export default function SimpleSidebar({ children }: { children: ReactNode }) {
       {/* mobilenav */}
       {/* display={{}}: レスポンシブ構文 */}
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-        <Flex ml={{ base: 0, md: 60 }} p="0">
-          {children}
-          <MainBar />
-          <Content />
-        </Flex>
+      <Flex ml={{ base: 0, md: 60 }} p="4">
+        {children}
+        <MainBar />
+        {/* <Footer /> */}
+        <Content />
+        <Detail />
+      </Flex>
     </Box>
   );
 }
@@ -103,7 +106,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
 
     <Box
-      flexBasis={"16%"}
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
@@ -136,7 +138,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       {
         LinkItems.map((link) => (
           <NavItem key={link.name} icon={link.icon} mt={1} >
-            <Link href={`../${link.name}/All`}>
+            <Link href={`./`}>
               {link.name}
             </Link>
           </NavItem>
@@ -159,8 +161,7 @@ const MainItems = [
 const MainBar = () => {
   return (
     <Box
-      flex={"1"}
-      bg={useColorModeValue('white', 'gr ay.900')}
+      bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 60 }
@@ -175,7 +176,7 @@ const MainBar = () => {
       {
         MainItems.map((link) => (
           <NavItem key={link.name} icon={link.icon} mt={1} >
-            <Link href={`../Tasks/${link.name}`}>
+            <Link href={`./${link.name}`}>
               {link.name}
             </Link>
           </NavItem>
@@ -194,9 +195,7 @@ interface NavItemProps extends FlexProps {
 const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
     <Link href="#"
-      style={{ textDecoration: 'none' }
-      }
-      _focus={{ boxShadow: 'none' }}
+      style={{ textDecoration: 'none' }}
     >
       <Flex
         align="center"
@@ -259,5 +258,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         Tone
       </Text>
     </Flex>
+
   );
 };
+
