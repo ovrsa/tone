@@ -166,7 +166,7 @@ const MainBar = () => {
       }
       // pos:positionの事 fixed:画面の決まった位置に固定する
       // pos="fixed"
-      h="95vh"
+      h="100vh"
     >
       {/* justifyContent: フレックスコンテナの主軸およびグリッドコンテナーのインライン軸に沿って、中身のアイテムの間や周囲に間隔を配置する*/}
       < Flex alignItems="center" mx="8" justifyContent="space-between" >

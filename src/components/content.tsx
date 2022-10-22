@@ -113,6 +113,7 @@ export const Content = () => {
     <>
       <Box
         flex={"1"}
+        h="100vh"
         pl={12} className='Mainbar'>
         <form onSubmit={onAddFormSubmit}>
           <Flex
@@ -164,7 +165,7 @@ export const Content = () => {
         }
         // pos:positionの事 fixed:画面の決まった位置に固定する
         // pos="fixed"
-        h="95vh"
+        h="100vh"
       ></Box>
 
       {/* detailBar */}

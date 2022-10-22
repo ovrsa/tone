@@ -1,4 +1,3 @@
-import React, { ReactNode } from 'react';
 import Link from 'next/link'
 import {
   IconButton,
@@ -50,7 +49,7 @@ const LinkItems: Array<LinkItemProps> = [
 
 // Sidebar関数
 // children:全ての子要素を取得するプロパティ
-export default function SimpleSidebar({ children }: { children: ReactNode }) {
+export default function SimpleSidebar() {
   // isOpen: 折りたたみを発火させる際のトリガー
   // useDisclosure: chakra-uiのカスタムフック、開く、閉じるの支援
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -82,12 +81,10 @@ export default function SimpleSidebar({ children }: { children: ReactNode }) {
       {/* mobilenav */}
       {/* display={{}}: レスポンシブ構文 */}
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-      <Flex ml={{ base: 0, md: 60 }} p="4">
-        {children}
-        <MainBar />
-        {/* <Footer /> */}
-        <Content />
-        <Detail />
+      <Flex ml={{ base: 0, md: 60 }} p="0" h="100vh">
+        <MainBar flex-basis={"20%"} />
+        <Content flex-basis={"100%"} />
+        <Detail flex-basis={"100%"} />
       </Flex>
     </Box>
   );
@@ -113,7 +110,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       }
       // pos:positionの事 fixed:画面の決まった位置に固定する
       pos="fixed"
-      h="full"
+      h="100vh"
       {...rest}>
       {/* justifyContent: フレックスコンテナの主軸およびグリッドコンテナーのインライン軸に沿って、中身のアイテムの間や周囲に間隔を配置する*/}
       < Flex h="20" alignItems="center" mx="8" justifyContent="space-between" >
@@ -148,7 +145,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   );
 };
 
-
 // LinkItemの見た目データ
 const MainItems = [
   { name: 'All', icon: CheckIcon },
@@ -168,7 +164,7 @@ const MainBar = () => {
       }
       // pos:positionの事 fixed:画面の決まった位置に固定する
       // pos="fixed"
-      h="95vh"
+      h="100vh"
     >
       {/* justifyContent: フレックスコンテナの主軸およびグリッドコンテナーのインライン軸に沿って、中身のアイテムの間や周囲に間隔を配置する*/}
       < Flex alignItems="center" mx="8" justifyContent="space-between" >
