@@ -36,7 +36,7 @@ import {
   ModalCloseButton,
   Button,
 } from "@chakra-ui/react"
-import db from "../hooks/firebase"
+import db from "../../hooks/firebase"
 import { useEffect } from 'react'
 import {
   collection,

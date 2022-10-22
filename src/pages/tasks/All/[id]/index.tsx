@@ -1,4 +1,3 @@
-import React, { ReactNode } from 'react';
 import Link from 'next/link'
 import {
   IconButton,
@@ -30,7 +29,9 @@ import {
   SearchIcon,
   TimeIcon
 } from '@chakra-ui/icons';
-import { Content } from "../../components/content"
+import { Content } from '@components/content';
+import { Detail } from '@components/detail';
+
 
 // LinkItemの型
 interface LinkItemProps {
@@ -48,14 +49,13 @@ const LinkItems: Array<LinkItemProps> = [
 
 // Sidebar関数
 // children:全ての子要素を取得するプロパティ
-export default function SimpleSidebar({ children }: { children: ReactNode }) {
+export default function SimpleSidebar() {
   // isOpen: 折りたたみを発火させる際のトリガー
   // useDisclosure: chakra-uiのカスタムフック、開く、閉じるの支援
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     // minH:要素の最小高
     <Box
-      p={"0"}
       minH="100vh"
       bg={useColorModeValue('gray.100', 'gray.900')}
     >
@@ -81,10 +81,10 @@ export default function SimpleSidebar({ children }: { children: ReactNode }) {
       {/* mobilenav */}
       {/* display={{}}: レスポンシブ構文 */}
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-      <Flex ml={{ base: 0, md: 60 }} p="0">
-        {children}
-        <MainBar />
-        <Content />
+      <Flex ml={{ base: 0, md: 60 }} p="0" h="100vh">
+        <MainBar flex-basis={"20%"} />
+        <Content flex-basis={"100%"} />
+        <Detail flex-basis={"100%"} />
       </Flex>
     </Box>
   );
@@ -103,7 +103,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
 
     <Box
-      flexBasis={"16%"}
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
@@ -111,7 +110,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       }
       // pos:positionの事 fixed:画面の決まった位置に固定する
       pos="fixed"
-      h="full"
+      h="100vh"
       {...rest}>
       {/* justifyContent: フレックスコンテナの主軸およびグリッドコンテナーのインライン軸に沿って、中身のアイテムの間や周囲に間隔を配置する*/}
       < Flex h="20" alignItems="center" mx="8" justifyContent="space-between" >
@@ -136,7 +135,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       {
         LinkItems.map((link) => (
           <NavItem key={link.name} icon={link.icon} mt={1} >
-            <Link href={`../${link.name}/All`}>
+            <Link href={`./`}>
               {link.name}
             </Link>
           </NavItem>
@@ -158,8 +157,7 @@ const MainItems = [
 const MainBar = () => {
   return (
     <Box
-      flex={"1"}
-      bg={useColorModeValue('white', 'gr ay.900')}
+      bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 60 }
@@ -174,7 +172,7 @@ const MainBar = () => {
       {
         MainItems.map((link) => (
           <NavItem key={link.name} icon={link.icon} mt={1} >
-            <Link href={`../Tasks/${link.name}`}>
+            <Link href={`./${link.name}`}>
               {link.name}
             </Link>
           </NavItem>
@@ -193,8 +191,8 @@ interface NavItemProps extends FlexProps {
 const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
     <Link href="#"
-      style={{ textDecoration: 'none' }
-      }>
+      style={{ textDecoration: 'none' }}
+    >
       <Flex
         align="center"
         p="4"
@@ -256,5 +254,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         Tone
       </Text>
     </Flex>
+
   );
 };
+
