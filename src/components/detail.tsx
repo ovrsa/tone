@@ -1,26 +1,16 @@
-import { Box, Textarea, Button, Input } from '@chakra-ui/react';
+import { Box, Textarea, Button, Input, Checkbox } from '@chakra-ui/react';
 import { doc, setDoc } from 'firebase/firestore';
-import type { NextPage } from 'next'
-import Link from 'next/link'
 import { useRouter } from "next/router";
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { postsState } from '../../atoms/atom';
-import db from '../../hooks/firebase';
-import { ITodoData } from '../../interfaces/todo';
+import { postsState } from '../atoms/atom';
+import db from '../hooks/firebase';
+import { ITodoData } from '../interfaces/todo';
 
-const EditTodo: NextPage = () => {
-
-  const router = useRouter();
+export const Detail = () => {
   const { query, isReady } = useRouter();
   const [posts] = useRecoilState(postsState)
   const [currentTodo, setCurrentTodo] = useState<any>("")
-
-  // interface ITodoData {
-  //   id: string;
-  //   title: string;
-  //   detail: string;
-  //   }
 
   /**
    * recoilに保存した投稿の一覧からidが同じ投稿を抜き出して、
@@ -32,7 +22,6 @@ const EditTodo: NextPage = () => {
   // todo: setCurrentTodoに保存(useState)
   // posts.find: postの中からある値を探し出す
   // post.id === query.id: useRouter内の{query}とidが被っているもの
-  
 
   // useRouterからpostのidが取得できたら、setCurrentTodoにtodoをセットする
   // * つまり、isReadyがtrue = idが取得出来ている状態なので、idが一致するpostがtodoに格納されている
@@ -69,41 +58,34 @@ const EditTodo: NextPage = () => {
    * @param title
    * @param detail
    */
-  // 第一引数で既存recoilのpostsから情報を引き出す
-  // 第二引数入力した値を第一引数に上書きする、つまり更新
+    // 第一引数で既存recoilのpostsから情報を引き出す
+    // 第二引数入力した値を第一引数に上書きする、つまり更新
     const post = setDoc(
       doc(db, "posts", id), // 第一引数
       { id, title, detail } // 第二引数
     );
-
-    // Firebase送信後の処理
-    // .thenは処理が終わった後の話
-    post.then(() => {
-      // ホームに遷移する
-      router.push("/")
-    })
   }
 
   return (
-    <Box>
-      <Box>タスクの編集</Box>
-      <Link href="../">Back</Link>
+    <Box
+      flex={"1"}>
       {/* currentTodoの情報が入っている場合のみ以下の部分をレンダリング */}
       {/* undefined: 値が代入されていない状態 */}
       {/* !=: ==の逆 */}
       {/* &&(論理積): 全てがtrueである場合のみtrue */}
       {currentTodo !== undefined &&
-        <Box>
+        <Box pl={12}>
+          <Checkbox defaultChecked>共有</Checkbox>
           {/* 前回保存したデータ */}
           <>
-          {/* onSubmit: 送信ボタンが押された際に起動するイベント */}
-          {/* postUpdateTaskを発火させる */}
+            {/* onSubmit: 送信ボタンが押された際に起動するイベント */}
+            {/* postUpdateTaskを発火させる */}
             <form onSubmit={postUpdateTask}>
               <Input
-              // name: 入力欄コントロールの名前、フォームと一緒に送信される
+                // name: 入力欄コントロールの名前、フォームと一緒に送信される
                 name="title"
                 placeholder="Basic usage"
-              // value: 初期値
+                // value: 初期値
                 value={currentTodo.title}
                 // onchangeは入力欄や選択肢が変更された時に発生するイベント<input>、<select>、及び<textarea>要素で対応
                 // (e):イベントが発生したタイミングでsetCurrentTodoを呼び出す
@@ -113,7 +95,7 @@ const EditTodo: NextPage = () => {
                 // title: e.target.value: titleに入力された値を取得
                 onChange={(e) => setCurrentTodo({ ...currentTodo, title: e.target.value })} />
 
-                {/* テキストエリアもやっていること事は同じ */}
+              {/* テキストエリアもやっていること事は同じ */}
               <Textarea
                 name="detail"
                 value={currentTodo.detail}
@@ -128,5 +110,3 @@ const EditTodo: NextPage = () => {
 
   )
 }
-
-export default EditTodo
