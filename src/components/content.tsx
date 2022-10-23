@@ -20,7 +20,7 @@ import {
   query,
   where,
   deleteDoc,
-  setDoc
+  setDoc,
 } from "firebase/firestore"
 import db from "../hooks/firebase"
 import { v4 as uuidv4 } from 'uuid';
@@ -50,7 +50,8 @@ export const Content = () => {
         querySnapshot.docs.map((post) => ({
           id: post.data().id,
           title: post.data().title,
-          text: post.data().text
+          text: post.data().text,
+          start: post.data().start
         }))
       )
     })
@@ -105,7 +106,9 @@ export const Content = () => {
     const postData: any = {
       id: uuidv4(),
       title: e.target.elements["title"].value,
-      // detail: e.target.elements["detail"].value
+      // detail: e.target.elements["detail"].value,
+      // start: e.target.elements["start"].value,
+      // end: e.target.elements["end"].value
     }
     postAddTask(postData);
   }
@@ -141,17 +144,24 @@ export const Content = () => {
                   </Link>
                 </Box>
 
-                {/* 削除アイコン */}
-                <Box>
-                  <IconButton
-                    variant='outline'
-                    colorScheme='teal'
-                    aria-label='DeleteIcon'
-                    border="0"
-                    onClick={() => handleDeletePost(post)}
-                    icon={<DeleteIcon />}
-                  />
+                <Box color={"blue.400"}>
+                  {post.start}
                 </Box>
+
+                {/* 削除アイコン */}
+                <Link href='./' passHref>
+                  <Box>
+                    <IconButton
+                      variant='outline'
+                      colorScheme='teal'
+                      aria-label='DeleteIcon'
+                      border="0"
+                      onClick={() => handleDeletePost(post)}
+                      icon={<DeleteIcon />}
+                    />
+                  </Box>
+                </Link>
+
               </HStack>
             </>
           ))}
