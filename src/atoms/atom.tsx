@@ -10,7 +10,8 @@ export const postsState = atom({
       create: "",
       id: "",
       text: "",
-      title: ""
+      title: "",
+      start: ""
     }
   ],
   effects_UNSTABLE: [persistAtom],

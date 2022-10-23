@@ -1,4 +1,4 @@
-import { Box, Textarea, Button, Input, Checkbox } from '@chakra-ui/react';
+import { Box, Textarea, Button, Input, Checkbox, Flex } from '@chakra-ui/react';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from "next/router";
 import { useEffect, useState } from 'react';
@@ -49,7 +49,7 @@ export const Detail = () => {
     e.preventDefault()
 
     // currentTodoからtitleとdetailを分割代入し、setDocで直接指定できるような形に変換
-    const { id, title, detail } = currentTodo
+    const { id, title, detail, start } = currentTodo
 
     // Firebaseに送信する
     /**
@@ -57,12 +57,14 @@ export const Detail = () => {
    * @param id 
    * @param title
    * @param detail
+   * @param start
+
    */
     // 第一引数で既存recoilのpostsから情報を引き出す
     // 第二引数入力した値を第一引数に上書きする、つまり更新
     const post = setDoc(
       doc(db, "posts", id), // 第一引数
-      { id, title, detail } // 第二引数
+      { id, title, detail, start } // 第二引数
     );
   }
 
@@ -75,16 +77,25 @@ export const Detail = () => {
       {/* &&(論理積): 全てがtrueである場合のみtrue */}
       {currentTodo !== undefined &&
         <Box pl={12}>
-          <Checkbox defaultChecked>共有</Checkbox>
           {/* 前回保存したデータ */}
-          <>
+          <Box pb={12}>
+            <Checkbox defaultChecked>共有</Checkbox>
             {/* onSubmit: 送信ボタンが押された際に起動するイベント */}
             {/* postUpdateTaskを発火させる */}
             <form onSubmit={postUpdateTask}>
+              <Flex>日時
+                <Input
+                  name="start"
+                  value={currentTodo.start}
+                  placeholder="Select Date and Time"
+                  size="md"
+                  type="datetime-local"
+                  onChange={(e) => setCurrentTodo({ ...currentTodo, start: e.target.value })} />
+              </Flex>
               <Input
                 // name: 入力欄コントロールの名前、フォームと一緒に送信される
                 name="title"
-                placeholder="Basic usage"
+                placeholder="title"
                 // value: 初期値
                 value={currentTodo.title}
                 // onchangeは入力欄や選択肢が変更された時に発生するイベント<input>、<select>、及び<textarea>要素で対応
@@ -99,11 +110,11 @@ export const Detail = () => {
               <Textarea
                 name="detail"
                 value={currentTodo.detail}
-                placeholder='テキスト'
+                placeholder='Description'
                 onChange={(e) => setCurrentTodo({ ...currentTodo, detail: e.target.value })} />
               <Button type="submit" colorScheme='teal'>更新</Button>
             </form>
-          </>
+          </Box>
         </Box>
       }
     </Box >
