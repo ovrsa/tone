@@ -20,7 +20,7 @@ import {
   query,
   where,
   deleteDoc,
-  setDoc,
+  setDoc
 } from "firebase/firestore"
 import db from "../hooks/firebase"
 import { v4 as uuidv4 } from 'uuid';
@@ -52,6 +52,7 @@ export const Content = () => {
           title: post.data().title,
           text: post.data().text,
           start: post.data().start
+
         }))
       )
     })
@@ -109,6 +110,7 @@ export const Content = () => {
       // detail: e.target.elements["detail"].value,
       // start: e.target.elements["start"].value,
       // end: e.target.elements["end"].value
+
     }
     postAddTask(postData);
   }
@@ -162,10 +164,10 @@ export const Content = () => {
                   </Box>
                 </Link>
 
-              </HStack>
+              </HStack >
             </>
           ))}
-        </Stack>
+        </Stack >
       </Box >
       <Box
         bg={useColorModeValue('white', 'gray.900')}

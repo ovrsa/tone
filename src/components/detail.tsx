@@ -77,9 +77,9 @@ export const Detail = () => {
       {/* &&(論理積): 全てがtrueである場合のみtrue */}
       {currentTodo !== undefined &&
         <Box pl={12}>
+          <Checkbox defaultChecked>共有</Checkbox>
           {/* 前回保存したデータ */}
-          <Box pb={12}>
-            <Checkbox defaultChecked>共有</Checkbox>
+          <>
             {/* onSubmit: 送信ボタンが押された際に起動するイベント */}
             {/* postUpdateTaskを発火させる */}
             <form onSubmit={postUpdateTask}>
@@ -114,7 +114,7 @@ export const Detail = () => {
                 onChange={(e) => setCurrentTodo({ ...currentTodo, detail: e.target.value })} />
               <Button type="submit" colorScheme='teal'>更新</Button>
             </form>
-          </Box>
+          </>
         </Box>
       }
     </Box >
