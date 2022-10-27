@@ -3,6 +3,7 @@ import {
 } from '@chakra-ui/icons';
 import {
   Box,
+  Button,
   Flex,
   HStack,
   IconButton,
@@ -29,6 +30,7 @@ import Link from 'next/link';
 import { postsState } from "@atoms/atom"
 import { useRecoilState } from 'recoil';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 // firebaseのコレクションから複数のドキュメントを取得する
 const q = query(
@@ -38,9 +40,15 @@ const q = query(
   orderBy('create')
 )
 
-export const Content = () => {
+type props = {
+  setTodo: any
+}
+
+export const SingleContent = ({ setTodo }: props) => {
   // recoilでatomから取得したグローバルの値
   const [posts, setPosts] = useRecoilState(postsState);
+  const router = useRouter()
+
 
   // recoilで取得した値をonSnapshotで取得、mapで処理を回して全て表示
   // ※onSnapshotを実行すると最初に全てのドキュメントを取得するのでuseEffectで制御
@@ -141,9 +149,12 @@ export const Content = () => {
             <>
               <HStack>
                 <Box key={post.title}>
-                  <Link href={`./All/${post.id}`}>
+                  <Button onClick={() => {
+                    setTodo(post)
+                    router.push(`/Tasks/All/${post.id}`)
+                  }}>
                     <a>{post.title}</a>
-                  </Link>
+                  </Button>
                 </Box>
 
                 <Box color={"blue.400"}>

@@ -30,7 +30,7 @@ import {
   SearchIcon,
   TimeIcon
 } from '@chakra-ui/icons';
-import { Content } from "../../components/content"
+import { AllContent } from '@components/AllContent';
 
 // LinkItemの型
 interface LinkItemProps {
@@ -84,7 +84,7 @@ export default function SimpleSidebar({ children }: { children: ReactNode }) {
       <Flex ml={{ base: 0, md: 60 }} p="0">
         {children}
         <MainBar />
-        <Content />
+        <AllContent />
       </Flex>
     </Box>
   );
@@ -159,7 +159,7 @@ const MainBar = () => {
   return (
     <Box
       flex={"1"}
-      bg={useColorModeValue('white', 'gr ay.900')}
+      bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 60 }
