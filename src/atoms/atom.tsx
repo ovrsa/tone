@@ -11,7 +11,8 @@ export const postsState = atom({
       id: "",
       text: "",
       title: "",
-      start: ""
+      start: "",
+      share: ""
     }
   ],
   effects_UNSTABLE: [persistAtom],

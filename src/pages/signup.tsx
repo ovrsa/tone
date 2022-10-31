@@ -31,9 +31,6 @@ export default function SignupCard() {
           <Heading fontSize={'4xl'} textAlign={'center'}>
             Sign up
           </Heading>
-          <Text fontSize={'lg'} color={'gray.600'}>
-            to enjoy all of our cool features ✌️
-          </Text>
         </Stack>
         <Box
           rounded={'lg'}
@@ -88,7 +85,7 @@ export default function SignupCard() {
             </Stack>
             <Stack pt={6}>
               <Text align={'center'}>
-                Already a user? <Link color={'blue.400'}>Login</Link>
+                <Link color={'blue.400'} href="./signin">既に登録済の方</Link>
               </Text>
             </Stack>
           </Stack>
