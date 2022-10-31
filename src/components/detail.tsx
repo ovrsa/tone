@@ -56,8 +56,9 @@ export const Detail = ({ todo, setTodo }: props) => {
     e.preventDefault()
 
     // todoからtitleとdetailを分割代入し、setDocで直接指定できるような形に変換
-    const { id, title, detail, start } = todo
+    const { id, title, detail, start, share } = todo
 
+    // console.log(share)
     // Firebaseに送信する
     /**
    * 更新するタスクのオブジェクトに渡すプロパティ
@@ -65,15 +66,17 @@ export const Detail = ({ todo, setTodo }: props) => {
    * @param title
    * @param detail
    * @param start
+   * @param share
 
    */
     // 第一引数で既存recoilのpostsから情報を引き出す
     // 第二引数入力した値を第一引数に上書きする、つまり更新
     const post = setDoc(
       doc(db, "posts", id), // 第一引数
-      { id, title, detail, start } // 第二引数
+      { id, title, detail, start, share } // 第二引数
     );
   }
+
 
   return (
     <Box
@@ -84,7 +87,18 @@ export const Detail = ({ todo, setTodo }: props) => {
       {/* &&(論理積): 全てがtrueである場合のみtrue */}
       {todo !== undefined &&
         <Box pl={12}>
-          <Checkbox defaultChecked>共有</Checkbox>
+          <Checkbox
+            defaultChecked
+            name="share"
+            // isChecked={todo.share}
+            value={todo.share}
+            size="md"
+            onChange={(e) => {
+              console.log(e.target.value)
+              setTodo({ ...todo, share: e.target.value })
+            }}
+          >Google Calendarに共有
+          </Checkbox>
           {/* 前回保存したデータ */}
           <>
             {/* onSubmit: 送信ボタンが押された際に起動するイベント */}
