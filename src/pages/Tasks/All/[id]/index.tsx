@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import Link from 'next/link'
 import {
   IconButton,
@@ -14,13 +13,10 @@ import {
   BoxProps,
   FlexProps,
   Avatar,
-  VStack,
-  Button,
-} from '@chakra-ui/react';
-import {
-  FiMenu,
-} from 'react-icons/fi';
-import { IconType } from 'react-icons';
+  VStack
+} from '@chakra-ui/react'
+import { FiMenu } from 'react-icons/fi'
+import { IconType } from 'react-icons'
 import {
   AddIcon,
   ArrowRightIcon,
@@ -30,14 +26,15 @@ import {
   EditIcon,
   SearchIcon,
   TimeIcon
-} from '@chakra-ui/icons';
-import { AllContent } from '@components/AllContent';
-import { SearchButton } from "@components/SearchButton"
+} from '@chakra-ui/icons'
+import { SingleContent } from '@components/SingleContent'
+import { Detail } from '@components/detail'
+import { useState } from 'react'
 
 // LinkItemの型
 interface LinkItemProps {
-  name: string;
-  icon: IconType;
+  name: string
+  icon: IconType
 }
 // LinkItemの見た目データ
 // Array: 配列操作を行うための
@@ -45,23 +42,19 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Tasks', icon: AddIcon },
   { name: 'Memo', icon: EditIcon },
-  { name: 'Search', icon: SearchIcon },
-];
+  { name: 'Search', icon: SearchIcon }
+]
 
 // Sidebar関数
 // children:全ての子要素を取得するプロパティ
 export default function SimpleSidebar() {
   // isOpen: 折りたたみを発火させる際のトリガー
   // useDisclosure: chakra-uiのカスタムフック、開く、閉じるの支援
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [filter, setFilter] = useState("All")
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [currentTodo, setCurrentTodo] = useState<any>('')
   return (
     // minH:要素の最小高
-    <Box
-      p={"0"}
-      minH="100vh"
-      bg={useColorModeValue('gray.100', 'gray.900')}
-    >
+    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
@@ -75,7 +68,8 @@ export default function SimpleSidebar() {
         returnFocusOnClose={false}
         // onOverlayClick:モーダルのようにポップアップさせる
         onOverlayClick={onClose}
-        size="xs">
+        size="xs"
+      >
         <DrawerContent>
           <SidebarContent onClose={onClose} />
         </DrawerContent>
@@ -84,12 +78,17 @@ export default function SimpleSidebar() {
       {/* mobilenav */}
       {/* display={{}}: レスポンシブ構文 */}
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-      <Flex ml={{ base: 0, md: 60 }} p="0">
-        <MainBar filter={filter} setFilter={setFilter} />
-        <AllContent filter={filter} />
+      <Flex ml={{ base: 0, md: 60 }} p="0" h="100vh">
+        <MainBar flex-basis={'20%'} />
+        <SingleContent flex-basis={'100%'} setTodo={setCurrentTodo} />
+        <Detail
+          flex-basis={'100%'}
+          todo={currentTodo}
+          setTodo={setCurrentTodo}
+        />
       </Flex>
     </Box>
-  );
+  )
 }
 
 // SidebarPropsの型
@@ -97,26 +96,24 @@ export default function SimpleSidebar() {
 interface SidebarProps extends BoxProps {
   // void:（引数とか戻り値とかが）ないことを表す目印として使われる用語
   // 引数や戻り値とかがないときに「ない」の目印として使われる
-  onClose: () => void;
+  onClose: () => void
 }
 
 // ...rest:
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
-
     <Box
-      flexBasis={"16%"}
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: 60 }
-      }
+      w={{ base: 'full', md: 60 }}
       // pos:positionの事 fixed:画面の決まった位置に固定する
       pos="fixed"
-      h="full"
-      {...rest}>
+      h="100vh"
+      {...rest}
+    >
       {/* justifyContent: フレックスコンテナの主軸およびグリッドコンテナーのインライン軸に沿って、中身のアイテムの間や周囲に間隔を配置する*/}
-      < Flex h="20" alignItems="center" mx="8" justifyContent="space-between" >
+      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         {/* VStack:縦方向に要素を並べる */}
         <VStack>
           {/* Avatar:アイコン */}
@@ -128,25 +125,21 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             }
           />
           {/* タイトルテキスト */}
-          <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold" >
+          <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
             Tone
           </Text>
-        </VStack >
+        </VStack>
         {/* menuを閉じる際の×アイコン */}
-        < CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
-      </Flex >
-      {
-        LinkItems.map((link) => (
-          <NavItem key={link.name} icon={link.icon} mt={1} >
-            <Link href={`../${link.name}/All`}>
-              {link.name}
-            </Link>
-          </NavItem>
-        ))
-      }
-    </Box >
-  );
-};
+        <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+      </Flex>
+      {LinkItems.map(link => (
+        <NavItem key={link.name} icon={link.icon} mt={1}>
+          <Link href={`./`}>{link.name}</Link>
+        </NavItem>
+      ))}
+    </Box>
+  )
+}
 
 // LinkItemの見た目データ
 const MainItems = [
@@ -154,55 +147,40 @@ const MainItems = [
   { name: 'Today', icon: TimeIcon },
   { name: 'Tomorrow', icon: ArrowRightIcon },
   { name: 'Completed', icon: CheckCircleIcon },
-  { name: 'Trash', icon: DeleteIcon },
-];
+  { name: 'Trash', icon: DeleteIcon }
+]
 
-
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
-// -----------------------------mainbar-----------------------------------
-// -----------------------------------------------------------------------
-const MainBar = ({ filter, setFilter }) => {
-  console.log(filter)
+const MainBar = () => {
   return (
     <Box
-      flex={"1"}
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: 60 }
-      }
+      w={{ base: 'full', md: 60 }}
       // pos:positionの事 fixed:画面の決まった位置に固定する
       // pos="fixed"
       h="100vh"
     >
       {/* justifyContent: フレックスコンテナの主軸およびグリッドコンテナーのインライン軸に沿って、中身のアイテムの間や周囲に間隔を配置する*/}
-
-      {
-        MainItems.map((link) => (
-          <NavItem key={link.name} icon={link.icon} mt={1} >
-            <Button
-              onClick={() => setFilter(link.name)}>
-              {link.name}
-            </Button>
-          </NavItem>
-        ))
-      }
-    </Box >
+      <Flex alignItems="center" mx="8" justifyContent="space-between"></Flex>
+      {MainItems.map(link => (
+        <NavItem key={link.name} icon={link.icon} mt={1}>
+          <Link href={`./${link.name}`}>{link.name}</Link>
+        </NavItem>
+      ))}
+    </Box>
   )
 }
 
 // NavItemPropsの型
 interface NavItemProps extends FlexProps {
-  icon: IconType;
+  icon: IconType
 }
 
 // NavItemの呼び出し関数
 const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
-    <Link href="#"
-      style={{ textDecoration: 'none' }
-      }>
+    <Link href="#" style={{ textDecoration: 'none' }}>
       <Flex
         align="center"
         p="4"
@@ -212,29 +190,30 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
         cursor="pointer"
         _hover={{
           bg: 'cyan.400',
-          color: 'white',
+          color: 'white'
         }}
-        {...rest}>
+        {...rest}
+      >
         {icon && (
           <Icon
             mr="4"
             fontSize="16"
             _groupHover={{
-              color: 'white',
+              color: 'white'
             }}
             as={icon}
           />
         )}
         {children}
       </Flex>
-    </Link >
-  );
-};
+    </Link>
+  )
+}
 
 // Mobile
 // MobilePropsの型
 interface MobileProps extends FlexProps {
-  onOpen: () => void;
+  onOpen: () => void
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   return (
@@ -247,7 +226,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
       justifyContent="flex-start"
-      {...rest}>
+      {...rest}
+    >
       <IconButton
         variant="outline"
         onClick={onOpen}
@@ -255,14 +235,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         icon={<FiMenu />}
       />
 
-      <Text
-        fontSize="2xl"
-        ml="8"
-        fontFamily="monospace"
-        fontWeight="bold"
-      >
+      <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
         Tone
       </Text>
     </Flex>
-  );
-};
+  )
+}

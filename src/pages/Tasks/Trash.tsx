@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode } from 'react';
 import Link from 'next/link'
 import {
   IconButton,
@@ -15,7 +15,6 @@ import {
   FlexProps,
   Avatar,
   VStack,
-  Button,
 } from '@chakra-ui/react';
 import {
   FiMenu,
@@ -31,8 +30,6 @@ import {
   SearchIcon,
   TimeIcon
 } from '@chakra-ui/icons';
-import { AllContent } from '@components/AllContent';
-import { SearchButton } from "@components/SearchButton"
 
 // LinkItemの型
 interface LinkItemProps {
@@ -50,15 +47,13 @@ const LinkItems: Array<LinkItemProps> = [
 
 // Sidebar関数
 // children:全ての子要素を取得するプロパティ
-export default function SimpleSidebar() {
+export default function SimpleSidebar({ children }: { children: ReactNode }) {
   // isOpen: 折りたたみを発火させる際のトリガー
   // useDisclosure: chakra-uiのカスタムフック、開く、閉じるの支援
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [filter, setFilter] = useState("All")
   return (
     // minH:要素の最小高
     <Box
-      p={"0"}
       minH="100vh"
       bg={useColorModeValue('gray.100', 'gray.900')}
     >
@@ -84,10 +79,10 @@ export default function SimpleSidebar() {
       {/* mobilenav */}
       {/* display={{}}: レスポンシブ構文 */}
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-      <Flex ml={{ base: 0, md: 60 }} p="0">
-        <MainBar filter={filter} setFilter={setFilter} />
-        <AllContent filter={filter} />
-      </Flex>
+      <Box ml={{ base: 0, md: 60 }} p="4">
+        {children}
+        <MainBar />
+      </Box>
     </Box>
   );
 }
@@ -105,7 +100,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
 
     <Box
-      flexBasis={"16%"}
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
@@ -148,6 +142,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   );
 };
 
+
 // LinkItemの見た目データ
 const MainItems = [
   { name: 'All', icon: CheckIcon },
@@ -157,34 +152,27 @@ const MainItems = [
   { name: 'Trash', icon: DeleteIcon },
 ];
 
-
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
-// -----------------------------mainbar-----------------------------------
-// -----------------------------------------------------------------------
-const MainBar = ({ filter, setFilter }) => {
-  console.log(filter)
+const MainBar = () => {
   return (
     <Box
-      flex={"1"}
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 60 }
       }
       // pos:positionの事 fixed:画面の決まった位置に固定する
-      // pos="fixed"
-      h="100vh"
+      pos="fixed"
+      h="full"
     >
       {/* justifyContent: フレックスコンテナの主軸およびグリッドコンテナーのインライン軸に沿って、中身のアイテムの間や周囲に間隔を配置する*/}
-
+      < Flex alignItems="center" mx="8" justifyContent="space-between" >
+      </Flex >
       {
         MainItems.map((link) => (
           <NavItem key={link.name} icon={link.icon} mt={1} >
-            <Button
-              onClick={() => setFilter(link.name)}>
+            <Link href={`../Tasks/${link.name}`}>
               {link.name}
-            </Button>
+            </Link>
           </NavItem>
         ))
       }
@@ -202,7 +190,9 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
     <Link href="#"
       style={{ textDecoration: 'none' }
-      }>
+      }
+      _focus={{ boxShadow: 'none' }}
+    >
       <Flex
         align="center"
         p="4"
