@@ -31,7 +31,6 @@ import {
   TimeIcon
 } from '@chakra-ui/icons';
 import { AllContent } from '@components/AllContent';
-import { SearchButton } from "@components/SearchButton"
 
 // LinkItemの型
 interface LinkItemProps {

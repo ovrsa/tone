@@ -14,7 +14,6 @@ import {
 } from '@chakra-ui/react';
 import {
   collection,
-  getDocs,
   doc,
   onSnapshot,
   orderBy,
@@ -44,7 +43,7 @@ type props = {
   setTodo: any
 }
 
-export const AllContent = ({ filter }) => {
+export const AllContent = ({ filter }: any) => {
   // recoilでatomから取得したグローバルの値
   const [posts, setPosts] = useRecoilState(postsState);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -78,21 +77,6 @@ export const AllContent = ({ filter }) => {
     }
     setFilteredPosts(posts)
   }, [posts, filter])
-
-  // // ページが更新されるタイミングでuseEffectで値を取得
-  // useEffect(() => {
-  //   // データベースからデータを取得する
-  //   const postData = collection(db, "posts");
-  //   getDocs(postData).then((snapShot) => {
-  //     setPosts(snapShot.docs.map((doc) => ({ ...doc.data() })));
-  //     // ...: スプレッド記法、式を複数の要素に展開して、それぞれ関数呼び出す
-  //   });
-
-  //   // リアルタイムで取得
-  //   onSnapshot(postData, (post) => {
-  //     setPosts(post.docs.map((doc) => ({ ...doc.data() })));
-  //   })
-  // }, []);
 
   //削除関数
   const handleDeletePost = async (targetPost: ITodoData) => {
