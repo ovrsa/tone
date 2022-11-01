@@ -29,7 +29,7 @@ import { ITodoData } from '../interfaces/todo'
 import Link from 'next/link';
 import { postsState } from "@atoms/atom"
 import { useRecoilState } from 'recoil';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 // firebaseのコレクションから複数のドキュメントを取得する
@@ -44,11 +44,9 @@ type props = {
   setTodo: any
 }
 
-export const AllContent = ({ filter }) => {
+export const TodayContent = () => {
   // recoilでatomから取得したグローバルの値
   const [posts, setPosts] = useRecoilState(postsState);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-
   // useRouterを使用するために関数定義
   const router = useRouter()
 
@@ -57,42 +55,32 @@ export const AllContent = ({ filter }) => {
   useEffect(() => {
     const unSub = onSnapshot(q, (querySnapshot) => {
       setPosts(
-        querySnapshot.docs.map((post) => ({
-          id: post.data().id,
-          title: post.data().title,
-          text: post.data().text,
-          start: post.data().start,
-          switch: post.data().switch
-        }))
+        querySnapshot.docs.map(
+          (post) => ({
+            id: post.data().id,
+            title: post.data().title,
+            text: post.data().text,
+            start: post.data().start
+          }))
       )
     })
     return () => unSub()
   }, [])
 
+  // ページが更新されるタイミングでuseEffectで値を取得
   useEffect(() => {
-    if (filter === "Today") {
-      setFilteredPosts(
-        posts.filter((post: any) => post.title === "3")
-      )
-      return
-    }
-    setFilteredPosts(posts)
-  }, [posts, filter])
+    // データベースからデータを取得する
+    const postData = collection(db, "posts");
+    getDocs(postData).then((snapShot) => {
+      setPosts(snapShot.docs.map((doc) => ({ ...doc.data() })));
+      // ...: スプレッド記法、式を複数の要素に展開して、それぞれ関数呼び出す
+    });
 
-  // // ページが更新されるタイミングでuseEffectで値を取得
-  // useEffect(() => {
-  //   // データベースからデータを取得する
-  //   const postData = collection(db, "posts");
-  //   getDocs(postData).then((snapShot) => {
-  //     setPosts(snapShot.docs.map((doc) => ({ ...doc.data() })));
-  //     // ...: スプレッド記法、式を複数の要素に展開して、それぞれ関数呼び出す
-  //   });
-
-  //   // リアルタイムで取得
-  //   onSnapshot(postData, (post) => {
-  //     setPosts(post.docs.map((doc) => ({ ...doc.data() })));
-  //   })
-  // }, []);
+    // リアルタイムで取得
+    onSnapshot(postData, (post) => {
+      setPosts(post.docs.map((doc) => ({ ...doc.data() })));
+    })
+  }, []);
 
   //削除関数
   const handleDeletePost = async (targetPost: ITodoData) => {
@@ -127,7 +115,6 @@ export const AllContent = ({ filter }) => {
     const postData: any = {
       id: uuidv4(),
       title: e.target.elements["title"].value,
-      share: true
       // detail: e.target.elements["detail"].value,
       // start: e.target.elements["start"].value,
       // end: e.target.elements["end"].value
@@ -146,7 +133,7 @@ export const AllContent = ({ filter }) => {
             color="#ffffff"
             fontWeight='semibold'
             fontSize='large'
-          >全て
+          >今日
           </Flex>
 
           <label htmlFor="todo"></label>
@@ -158,13 +145,13 @@ export const AllContent = ({ filter }) => {
         </Stack>
 
         <Stack>
-          {filteredPosts.map((post: any) => (
+          {posts.map((post: any) => (
             <>
               {/* titleの文字はボタンで表示、router.pushで画面遷移 */}
               <HStack>
                 <Box key={post.title}>
                   <Button onClick={() => {
-                    router.push(`/Tasks/All/${post.id}`)
+                    router.push(`/Tasks/Today/${post.id}`)
                   }}>
                     <a>{post.title}</a>
                   </Button>

@@ -59,8 +59,8 @@ export const SingleContent = ({ setTodo }: props) => {
           id: post.data().id,
           title: post.data().title,
           text: post.data().text,
-          start: post.data().start
-
+          start: post.data().start,
+          share: post.data().share
         }))
       )
     })
