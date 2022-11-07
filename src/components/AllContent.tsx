@@ -8,7 +8,6 @@ import {
   HStack,
   IconButton,
   Input,
-
   Stack,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -42,11 +41,42 @@ const q = query(
 type props = {
   setTodo: any
 }
+// 今日の日付を取得
+const formatDate = (day) => {
+  const today = new Date();
+  if (day === "Today") {
+    const dayOfWeek = today.getDay();
+    const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
+    const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr;
+    return todayValue
+  } else if (day === "Tomorrow") {
+    const dayOfWeek = today.getDay() + 1;
+    const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
+    const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate() + 1) + "/" + dayOfWeekStr;
+    return todayValue
+  } else {
+    const dayOfWeek = today.getDay() + 7;
+    const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
+    const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate() + 7) + "/" + dayOfWeekStr;
+    return todayValue
+  }
+};
+// formatDate();
+
+const formatDateforFirebase = (date) => {
+  const today = new Date(date);
+  const dayOfWeek = today.getDay();
+  const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
+  const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr;
+  return todayValue
+  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr);
+}
+formatDateforFirebase("firebaseの値をmapで");
 
 export const AllContent = ({ filter }: any) => {
   // recoilでatomから取得したグローバルの値
   const [posts, setPosts] = useRecoilState(postsState);
-  const [filteredPosts, setFilteredPosts] = useState([]);
+  // useStateで絞り込みの値を保存
 
   // useRouterを使用するために関数定義
   const router = useRouter()
@@ -60,22 +90,43 @@ export const AllContent = ({ filter }: any) => {
           id: post.data().id,
           title: post.data().title,
           text: post.data().text,
-          start: post.data().start,
-          switch: post.data().switch
+          start: new Date(post.data().start).toLocaleDateString(),
+          share: post.data().share
         }))
       )
     })
     return () => unSub()
   }, [])
 
+  const [filteredPosts, setFilteredPosts] = useState([]);
+
+  // 明日の日付を取得
+  const Tomorrow = new Date();
+  const tomorrowOfWeek = Tomorrow.getDay() + 1;
+  const tomorrowOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][tomorrowOfWeek];
+  const TomorrowValue = [Tomorrow.getFullYear() + "/" + (Tomorrow.getMonth() + 1) + "/" + (Tomorrow.getDate() + 1) + "/" + tomorrowOfWeekStr];
+  console.log(TomorrowValue)
+  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + tomorrowOfWeekStr);
+
+  // 次の7日間の日付を取得
+  const NextSevenDays = new Date();
+  const NextSevenDaysOfWeek = NextSevenDays.getDay();
+  const NextSevenDaysOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][NextSevenDaysOfWeek];
+  const NextSevenDaysValue = [NextSevenDays.getFullYear() + "/" + (NextSevenDays.getMonth() + 1) + "/" + (NextSevenDays.getDate() + 1) + "/" + NextSevenDaysOfWeekStr];
+  console.log(NextSevenDaysValue)
+  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + tomorrowOfWeekStr);
+
+  // SPAでMainBarのタブによって配列の操作を表現
   useEffect(() => {
     if (filter === "Today") {
-      setFilteredPosts(
-        posts.filter((post: any) => post.title === "3")
-      )
-      return
-    }
-    setFilteredPosts(posts)
+      setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
+    } else if (filter === "Tomorrow") {
+      setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
+    } else if (filter === "Next 7 Days") {
+      setFilteredPosts(posts.filter((post: any) => formatDate(filter) >= formatDateforFirebase(post.start)));
+    } else if (filter === "All") {
+      setFilteredPosts(posts)
+    };
   }, [posts, filter])
 
   //削除関数
@@ -132,7 +183,6 @@ export const AllContent = ({ filter }: any) => {
             fontSize='large'
           >全て
           </Flex>
-
           <label htmlFor="todo"></label>
           <Input name="title" placeholder='+ Enterキーを押して保存します。' autoFocus />
         </form>
@@ -177,6 +227,7 @@ export const AllContent = ({ filter }: any) => {
             </>
           ))}
         </Stack >
+
       </Box >
       <Box
         bg={useColorModeValue('white', 'gray.900')}

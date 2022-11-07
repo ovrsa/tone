@@ -1,4 +1,4 @@
-import { AddIcon, ArrowRightIcon, CheckCircleIcon, CheckIcon, DeleteIcon, EditIcon, SearchIcon, TimeIcon } from "@chakra-ui/icons";
+import { AddIcon, ArrowRightIcon, CalendarIcon, CheckCircleIcon, CheckIcon, DeleteIcon, EditIcon, SearchIcon, TimeIcon } from "@chakra-ui/icons";
 
 // LinkItemの型
 export interface LinkItemProps {
@@ -19,6 +19,7 @@ export const MainItems = [
   { name: 'All', icon: CheckIcon },
   { name: 'Today', icon: TimeIcon },
   { name: 'Tomorrow', icon: ArrowRightIcon },
+  { name: 'Next 7 Days', icon: CalendarIcon },
   { name: 'Completed', icon: CheckCircleIcon },
   { name: 'Trash', icon: DeleteIcon },
 ];
