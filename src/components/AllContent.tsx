@@ -41,6 +41,37 @@ const q = query(
 type props = {
   setTodo: any
 }
+// 今日の日付を取得
+const formatDate = (day) => {
+  const today = new Date();
+  if (day === "Today") {
+    const dayOfWeek = today.getDay();
+    const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
+    const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr;
+    return todayValue
+  } else if (day === "Tomorrow") {
+    const dayOfWeek = today.getDay() + 1;
+    const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
+    const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate() + 1) + "/" + dayOfWeekStr;
+    return todayValue
+  } else {
+    const dayOfWeek = today.getDay() + 7;
+    const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
+    const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate() + 7) + "/" + dayOfWeekStr;
+    return todayValue
+  }
+};
+// formatDate();
+
+const formatDateforFirebase = (date) => {
+  const today = new Date(date);
+  const dayOfWeek = today.getDay();
+  const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
+  const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr;
+  return todayValue
+  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr);
+}
+formatDateforFirebase("firebaseの値をmapで");
 
 export const AllContent = ({ filter }: any) => {
   // recoilでatomから取得したグローバルの値
@@ -67,45 +98,35 @@ export const AllContent = ({ filter }: any) => {
     return () => unSub()
   }, [])
 
-  const [todayPosts, setTodayPosts] = useState([]);
-  const [tomorrowPosts, setTomorrowPosts] = useState([]);
-
-  // 今日の日付を取得
-  const today = new Date("2022-11-05T22:20");
-  const dayOfWeek = today.getDay();
-  const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
-  const todayValue = [today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr];
-  console.log(todayValue)
-  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr);
+  const [filteredPosts, setFilteredPosts] = useState([]);
 
   // 明日の日付を取得
   const Tomorrow = new Date();
-  const tomorrowOfWeek = Tomorrow.getDay();
+  const tomorrowOfWeek = Tomorrow.getDay() + 1;
   const tomorrowOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][tomorrowOfWeek];
   const TomorrowValue = [Tomorrow.getFullYear() + "/" + (Tomorrow.getMonth() + 1) + "/" + (Tomorrow.getDate() + 1) + "/" + tomorrowOfWeekStr];
   console.log(TomorrowValue)
   // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + tomorrowOfWeekStr);
 
+  // 次の7日間の日付を取得
+  const NextSevenDays = new Date();
+  const NextSevenDaysOfWeek = NextSevenDays.getDay();
+  const NextSevenDaysOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][NextSevenDaysOfWeek];
+  const NextSevenDaysValue = [NextSevenDays.getFullYear() + "/" + (NextSevenDays.getMonth() + 1) + "/" + (NextSevenDays.getDate() + 1) + "/" + NextSevenDaysOfWeekStr];
+  console.log(NextSevenDaysValue)
+  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + tomorrowOfWeekStr);
+
   // SPAでMainBarのタブによって配列の操作を表現
   useEffect(() => {
-    // Todayをクリックした際に得られるポストを調整
     if (filter === "Today") {
-      setTodayPosts(
-        posts.filter((post: any) => post.title === "4")
-      )
-      return
-    }
-    setTodayPosts(posts)
-  }, [posts, filter])
-
-  useEffect(() => {
-    if (filter === "Tomorrow") {
-      setTomorrowPosts(
-        posts.filter((post: any) => post.title === "3")
-      )
-      return
-    }
-    setTomorrowPosts(posts)
+      setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
+    } else if (filter === "Tomorrow") {
+      setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
+    } else if (filter === "Next 7 Days") {
+      setFilteredPosts(posts.filter((post: any) => formatDate(filter) >= formatDateforFirebase(post.start)));
+    } else if (filter === "All") {
+      setFilteredPosts(posts)
+    };
   }, [posts, filter])
 
   //削除関数
@@ -171,7 +192,7 @@ export const AllContent = ({ filter }: any) => {
         </Stack>
 
         <Stack>
-          {todayPosts.map((post: any) => (
+          {filteredPosts.map((post: any) => (
             <>
               {/* titleの文字はボタンで表示、router.pushで画面遷移 */}
               <HStack>

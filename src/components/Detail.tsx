@@ -79,7 +79,6 @@ export const Detail = ({ todo, setTodo }: props) => {
       {todo !== undefined &&
         <Box pl={12}>
           <Checkbox
-            defaultChecked
             name="share"
             // isChecked={todo.share}
             value={todo.share}
