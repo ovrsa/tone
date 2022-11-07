@@ -17,3 +17,10 @@ export const postsState = atom({
   ],
   effects_UNSTABLE: [persistAtom],
 });
+
+// ログイン状態の保持
+export const isLoginState = atom({
+  key: 'isLoginState',
+  default: false,
+  effects_UNSTABLE: [persistAtom]
+})

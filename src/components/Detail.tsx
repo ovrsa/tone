@@ -18,15 +18,6 @@ export const Detail = ({ todo, setTodo }: props) => {
   const { query, isReady } = useRouter();
   const [posts] = useRecoilState(postsState)
 
-  /**
-   * recoilに保存した投稿の一覧からidが同じ投稿を抜き出して、
-   * todoの変数に格納する
-   **/
-
-  // todo: setTodoに保存(useState)
-  // posts.find: postの中からある値を探し出す
-  // post.id === query.id: useRouter内の{query}とidが被っているもの
-
   // useRouterからpostのidが取得できたら、setTodoにtodoをセットする
   // * つまり、isReadyがtrue = idが取得出来ている状態なので、idが一致するpostがtodoに格納されている
   // * 今回の場合はsetTodoに値が入ったタイミングでisReadyがtrueになる
@@ -75,8 +66,8 @@ export const Detail = ({ todo, setTodo }: props) => {
       doc(db, "posts", id), // 第一引数
       { id, title, detail, start, share } // 第二引数
     );
+    console.log(posts.start)
   }
-
 
   return (
     <Box
@@ -88,7 +79,6 @@ export const Detail = ({ todo, setTodo }: props) => {
       {todo !== undefined &&
         <Box pl={12}>
           <Checkbox
-            defaultChecked
             name="share"
             // isChecked={todo.share}
             value={todo.share}
@@ -111,7 +101,10 @@ export const Detail = ({ todo, setTodo }: props) => {
                   placeholder="Select Date and Time"
                   size="md"
                   type="datetime-local"
-                  onChange={(e) => setTodo({ ...todo, start: e.target.value })} />
+                  onChange={(e) => {
+                    console.log(e.target.value)
+                    setTodo({ ...todo, start: e.target.value })
+                  }} />
               </Flex>
               <Input
                 // name: 入力欄コントロールの名前、フォームと一緒に送信される

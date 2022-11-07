@@ -30,12 +30,12 @@ import {
   SearchIcon,
   TimeIcon
 } from '@chakra-ui/icons';
-import { TodayContent } from '@components/TodayContent';
+import { AllContent } from '@components/AllContent';
 
 // LinkItemの型
 interface LinkItemProps {
   name: string;
-  icon: IconType;
+  icon: any;
 }
 // LinkItemの見た目データ
 // Array: 配列操作を行うための
@@ -84,7 +84,7 @@ export default function SimpleSidebar({ children }: { children: ReactNode }) {
       <Flex ml={{ base: 0, md: 60 }} p="0">
         {children}
         <MainBar />
-        <TodayContent />
+        <AllContent />
       </Flex>
     </Box>
   );
