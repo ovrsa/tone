@@ -35,7 +35,7 @@ import { TodayContent } from '@components/TodayContent';
 // LinkItemの型
 interface LinkItemProps {
   name: string;
-  icon: IconType;
+  icon: any;
 }
 // LinkItemの見た目データ
 // Array: 配列操作を行うための

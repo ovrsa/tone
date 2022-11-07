@@ -8,7 +8,6 @@ import {
   HStack,
   IconButton,
   Input,
-
   Stack,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -46,7 +45,7 @@ type props = {
 export const AllContent = ({ filter }: any) => {
   // recoilでatomから取得したグローバルの値
   const [posts, setPosts] = useRecoilState(postsState);
-  const [filteredPosts, setFilteredPosts] = useState([]);
+  // useStateで絞り込みの値を保存
 
   // useRouterを使用するために関数定義
   const router = useRouter()
@@ -60,22 +59,53 @@ export const AllContent = ({ filter }: any) => {
           id: post.data().id,
           title: post.data().title,
           text: post.data().text,
-          start: post.data().start,
-          switch: post.data().switch
+          start: new Date(post.data().start).toLocaleDateString(),
+          share: post.data().share
         }))
       )
     })
     return () => unSub()
   }, [])
 
+  const [todayPosts, setTodayPosts] = useState([]);
+  const [tomorrowPosts, setTomorrowPosts] = useState([]);
+
+  // 今日の日付を取得
+  const today = new Date("2022-11-05T22:20");
+  const dayOfWeek = today.getDay();
+  const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
+  const todayValue = [today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr];
+  console.log(todayValue)
+  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr);
+
+  // 明日の日付を取得
+  const Tomorrow = new Date();
+  const tomorrowOfWeek = Tomorrow.getDay();
+  const tomorrowOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][tomorrowOfWeek];
+  const TomorrowValue = [Tomorrow.getFullYear() + "/" + (Tomorrow.getMonth() + 1) + "/" + (Tomorrow.getDate() + 1) + "/" + tomorrowOfWeekStr];
+  console.log(TomorrowValue)
+  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + tomorrowOfWeekStr);
+
+  // SPAでMainBarのタブによって配列の操作を表現
   useEffect(() => {
+    // Todayをクリックした際に得られるポストを調整
     if (filter === "Today") {
-      setFilteredPosts(
+      setTodayPosts(
+        posts.filter((post: any) => post.title === "4")
+      )
+      return
+    }
+    setTodayPosts(posts)
+  }, [posts, filter])
+
+  useEffect(() => {
+    if (filter === "Tomorrow") {
+      setTomorrowPosts(
         posts.filter((post: any) => post.title === "3")
       )
       return
     }
-    setFilteredPosts(posts)
+    setTomorrowPosts(posts)
   }, [posts, filter])
 
   //削除関数
@@ -132,7 +162,6 @@ export const AllContent = ({ filter }: any) => {
             fontSize='large'
           >全て
           </Flex>
-
           <label htmlFor="todo"></label>
           <Input name="title" placeholder='+ Enterキーを押して保存します。' autoFocus />
         </form>
@@ -142,7 +171,7 @@ export const AllContent = ({ filter }: any) => {
         </Stack>
 
         <Stack>
-          {filteredPosts.map((post: any) => (
+          {todayPosts.map((post: any) => (
             <>
               {/* titleの文字はボタンで表示、router.pushで画面遷移 */}
               <HStack>
@@ -177,6 +206,7 @@ export const AllContent = ({ filter }: any) => {
             </>
           ))}
         </Stack >
+
       </Box >
       <Box
         bg={useColorModeValue('white', 'gray.900')}
