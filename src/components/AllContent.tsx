@@ -100,22 +100,6 @@ export const AllContent = ({ filter }: any) => {
 
   const [filteredPosts, setFilteredPosts] = useState([]);
 
-  // 明日の日付を取得
-  const Tomorrow = new Date();
-  const tomorrowOfWeek = Tomorrow.getDay() + 1;
-  const tomorrowOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][tomorrowOfWeek];
-  const TomorrowValue = [Tomorrow.getFullYear() + "/" + (Tomorrow.getMonth() + 1) + "/" + (Tomorrow.getDate() + 1) + "/" + tomorrowOfWeekStr];
-  console.log(TomorrowValue)
-  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + tomorrowOfWeekStr);
-
-  // 次の7日間の日付を取得
-  const NextSevenDays = new Date();
-  const NextSevenDaysOfWeek = NextSevenDays.getDay();
-  const NextSevenDaysOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][NextSevenDaysOfWeek];
-  const NextSevenDaysValue = [NextSevenDays.getFullYear() + "/" + (NextSevenDays.getMonth() + 1) + "/" + (NextSevenDays.getDate() + 1) + "/" + NextSevenDaysOfWeekStr];
-  console.log(NextSevenDaysValue)
-  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + tomorrowOfWeekStr);
-
   // SPAでMainBarのタブによって配列の操作を表現
   useEffect(() => {
     if (filter === "Today") {
