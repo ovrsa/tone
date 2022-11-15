@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { provider } from '@hooks/firebase';
 import { FcGoogle } from 'react-icons/fc';
 // ↓認証した状態を持たせることの出来るhooks
@@ -26,14 +26,13 @@ import { auth } from '../hooks/firebase';
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { user } = useAuthContext();
   const handleSubmit = (event) => {
     // submitイベントのデフォルトの動作を停止
     event.preventDefault();
     // eventのtarget.elementsを使用してinputで入力した値を取得
     const { email, password } = event.target.elements;
     // auth.createUserWithEmailAndPasswordメソッドを使用してfirebaseにユーザー情報を登録
-    auth.createUserWithEmailAndPassword(email.value, password.value);
+    createUserWithEmailAndPassword(auth, email.value, password.value);
   };
 
   // useStateにセット
@@ -70,7 +69,7 @@ const SignUp = () => {
       bg={useColorModeValue('gray.50', 'gray.800')}>
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Stack align={'center'}>
-          <Text> {user.email}</Text>
+          <Text> {user?.email}</Text>
           <Heading fontSize={'4xl'} textAlign={'center'}>
             Sign up
           </Heading>

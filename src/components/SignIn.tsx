@@ -13,7 +13,7 @@ import {
   Text
 } from '@chakra-ui/react';
 import { auth, provider } from '@hooks/firebase';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { FcGoogle } from 'react-icons/fc';
 
 export default function Signin() {
@@ -23,7 +23,7 @@ export default function Signin() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const { email, password } = event.target.elements;
-    auth.signInWithEmailAndPassword(email.value, password.value);
+    signInWithEmailAndPassword(auth, email.value, password.value);
   };
   return (
     <Flex
@@ -63,7 +63,7 @@ export default function Signin() {
                   align={'center'}
                   justify={'space-between'}>
                 </Stack>
-                  <Link color={'blue.400'}>パスワードをお忘れの場合</Link>
+                <Link color={'blue.400'}>パスワードをお忘れの場合</Link>
                 <Button
                   bg={'blue.400'}
                   color={'white'}

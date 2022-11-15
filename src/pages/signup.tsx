@@ -10,9 +10,7 @@ const signup = () => {
   return (
     <>
     {/* ログイン状態を反映させるためにAuthProviderでSignUpコンポーネントを囲う必要がある */}
-      <AuthProvider>
         <SignUp />
-      </AuthProvider>
     </>
   )
 }
