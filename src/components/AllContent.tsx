@@ -44,17 +44,20 @@ type props = {
 // 今日の日付を取得
 const formatDate = (day) => {
   const today = new Date();
+  // Todayと同じ日程のタスクを出力
   if (day === "Today") {
     const dayOfWeek = today.getDay();
     const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
     const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr;
     return todayValue
   } else if (day === "Tomorrow") {
+    // Tomorrowと同じ日程のタスクを出力
     const dayOfWeek = today.getDay() + 1;
     const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
     const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate() + 1) + "/" + dayOfWeekStr;
     return todayValue
   } else {
+    // 本日の値以下のタスクを出力
     const dayOfWeek = today.getDay() + 7;
     const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
     const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate() + 7) + "/" + dayOfWeekStr;
@@ -62,16 +65,14 @@ const formatDate = (day) => {
   }
 };
 // formatDate();
-
 const formatDateforFirebase = (date) => {
   const today = new Date(date);
   const dayOfWeek = today.getDay();
   const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
   const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr;
   return todayValue
-  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr);
 }
-formatDateforFirebase("firebaseの値をmapで");
+formatDateforFirebase("");
 
 export const AllContent = ({ filter }: any) => {
   // recoilでatomから取得したグローバルの値
@@ -100,23 +101,7 @@ export const AllContent = ({ filter }: any) => {
 
   const [filteredPosts, setFilteredPosts] = useState([]);
 
-  // 明日の日付を取得
-  const Tomorrow = new Date();
-  const tomorrowOfWeek = Tomorrow.getDay() + 1;
-  const tomorrowOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][tomorrowOfWeek];
-  const TomorrowValue = [Tomorrow.getFullYear() + "/" + (Tomorrow.getMonth() + 1) + "/" + (Tomorrow.getDate() + 1) + "/" + tomorrowOfWeekStr];
-  console.log(TomorrowValue)
-  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + tomorrowOfWeekStr);
-
-  // 次の7日間の日付を取得
-  const NextSevenDays = new Date();
-  const NextSevenDaysOfWeek = NextSevenDays.getDay();
-  const NextSevenDaysOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][NextSevenDaysOfWeek];
-  const NextSevenDaysValue = [NextSevenDays.getFullYear() + "/" + (NextSevenDays.getMonth() + 1) + "/" + (NextSevenDays.getDate() + 1) + "/" + NextSevenDaysOfWeekStr];
-  console.log(NextSevenDaysValue)
-  // console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + tomorrowOfWeekStr);
-
-  // SPAでMainBarのタブによって配列の操作を表現
+  // MainBarのタブによって配列の操作を表現
   useEffect(() => {
     if (filter === "Today") {
       setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
@@ -184,7 +169,11 @@ export const AllContent = ({ filter }: any) => {
           >全て
           </Flex>
           <label htmlFor="todo"></label>
-          <Input name="title" placeholder='+ Enterキーを押して保存します。' autoFocus />
+          <Input
+            name="title"
+            placeholder='+ Enterキーを押して保存します。'
+            autoFocus
+          />
         </form>
 
         {/* ポスト */}
