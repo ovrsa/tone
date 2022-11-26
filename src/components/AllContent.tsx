@@ -78,7 +78,7 @@ formatDateforFirebase("");
 export const AllContent = ({ filter }: any) => {
   // recoilでatomから取得したグローバルの値
   const [posts, setPosts] = useRecoilState(postsState);
-  const [userItem, setUserItem] = useRecoilState(userItemState);
+  const [userItem] = useRecoilState(userItemState);
 
 
   // useRouterを使用するために関数定義

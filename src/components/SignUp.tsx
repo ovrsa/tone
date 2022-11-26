@@ -17,25 +17,25 @@ import {
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithPopup } from 'firebase/auth';
+import { User, userItemState, isLoginState } from "../atoms/atom";
 import { provider } from '@hooks/firebase';
 import { FcGoogle } from 'react-icons/fc';
 // ↓認証した状態を持たせることの出来るhooks
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from '../hooks/firebase';
 import { useRecoilState, useSetRecoilState } from 'recoil'
-import { User, userItemState, isLoginState } from "../atoms/atom";
 import React from "react";
 import db from "../hooks/firebase";
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/router';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useRecoilState(isLoginState)
+  const [uid, setUid] = useRecoilState(isLoginState)
   const [userItem, setUserItem] = useRecoilState(userItemState);
   const router = useRouter()
-  const setUid = useSetRecoilState(uidState)
 
   const handleSubmit = (event: any) => {
     // submitイベントのデフォルトの動作を停止
@@ -161,8 +161,11 @@ const SignUp = () => {
               </Center>
               <Stack pt={6}>
                 <Text align={'center'}>
-                  <Link color={'blue.400'} href="./
-                    signin">既に登録済の方</Link>
+                  <Link
+                    color={'blue.400'}
+                    href="./signin">
+                    既に登録済の方
+                  </Link>
                 </Text>
               </Stack>
             </Stack>
