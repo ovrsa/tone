@@ -25,7 +25,7 @@ import db from "../hooks/firebase"
 import { v4 as uuidv4 } from 'uuid';
 import { ITodoData } from '../interfaces/todo'
 import Link from 'next/link';
-import { postsState } from "@atoms/atom"
+import { postsState, userItemState } from "@atoms/atom"
 import { useRecoilState } from 'recoil';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -37,6 +37,7 @@ const q = query(
   where('isTrash', '==', false),
   orderBy('create')
 )
+
 
 type props = {
   setTodo: any
@@ -77,7 +78,8 @@ formatDateforFirebase("");
 export const AllContent = ({ filter }: any) => {
   // recoilでatomから取得したグローバルの値
   const [posts, setPosts] = useRecoilState(postsState);
-  // useStateで絞り込みの値を保存
+  const [userItem, setUserItem] = useRecoilState(userItemState);
+
 
   // useRouterを使用するために関数定義
   const router = useRouter()
@@ -129,7 +131,7 @@ export const AllContent = ({ filter }: any) => {
     /**
      * Firebaseに送信する
      */
-    const post = setDoc(doc(db, "posts", postData.id), postData);
+    const post = setDoc(doc(db, "users", userItem.uid, "posts", postData.id), postData);
     post.then(() => {
       // inputを空に
     })

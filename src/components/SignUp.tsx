@@ -16,23 +16,56 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithPopup } from 'firebase/auth';
 import { provider } from '@hooks/firebase';
 import { FcGoogle } from 'react-icons/fc';
 // ↓認証した状態を持たせることの出来るhooks
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from '../hooks/firebase';
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { User, userItemState, isLoginState } from "../atoms/atom";
+import React from "react";
+import db from "../hooks/firebase";
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { useRouter } from 'next/router';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const handleSubmit = (event) => {
+  const [isLogin, setIsLogin] = useRecoilState(isLoginState)
+  const [userItem, setUserItem] = useRecoilState(userItemState);
+  const router = useRouter()
+  const setUid = useSetRecoilState(uidState)
+
+  const handleSubmit = (event: any) => {
     // submitイベントのデフォルトの動作を停止
     event.preventDefault();
     // eventのtarget.elementsを使用してinputで入力した値を取得
     const { email, password } = event.target.elements;
     // auth.createUserWithEmailAndPasswordメソッドを使用してfirebaseにユーザー情報を登録
-    createUserWithEmailAndPassword(auth, email.value, password.value);
+    createUserWithEmailAndPassword(auth, email.value, password.value)
+      // 登録後、TOP画面に遷移
+      .then(async (userCredential) => {
+        const user = userCredential.user;
+        setIsLogin(true)
+        setUid(userCredential.user.uid)
+
+        //firebaseにusersコレクション作成 setDocでuser.uidを指定してドキュメントID作成
+        const userDocRef = doc(db, "users", user.uid);
+        await setDoc(userDocRef, {
+          uid: user.uid,
+          timeStamp: serverTimestamp(),
+          email: user.email
+        });
+        //ユーザー情報取得処理しuserItemへ格納
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            const { uid, email } = user as User;
+            setUserItem({ ...userItem, uid, email });
+          }
+        });
+        router.push('../Tasks/All')
+      });
   };
 
   // useStateにセット
@@ -50,17 +83,6 @@ const SignUp = () => {
     signInWithPopup(auth, provider)
   }
 
-  // function UserInfo() {
-  //   return (
-  //     <>
-  //       ユーザー情報
-  //     </>
-  //     <div className='userInfo'>
-  //       <img src={auth.currentUser.photoURL} alt="" />
-  //     </div>
-  //   );
-  // }
-
   return (
     <Flex
       minH={'100vh'}
@@ -69,7 +91,6 @@ const SignUp = () => {
       bg={useColorModeValue('gray.50', 'gray.800')}>
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Stack align={'center'}>
-          <Text> {user?.email}</Text>
           <Heading fontSize={'4xl'} textAlign={'center'}>
             Sign up
           </Heading>
@@ -141,7 +162,7 @@ const SignUp = () => {
               <Stack pt={6}>
                 <Text align={'center'}>
                   <Link color={'blue.400'} href="./
-                  [signin">既に登録済の方</Link>
+                    signin">既に登録済の方</Link>
                 </Text>
               </Stack>
             </Stack>
@@ -154,7 +175,3 @@ const SignUp = () => {
 }
 
 export default SignUp;
-
-function useAuthContext(): { user: any; } {
-  throw new Error('Function not implemented.');
-}
