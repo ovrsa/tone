@@ -32,18 +32,17 @@ import { useRouter } from 'next/router';
 
 // firebaseのコレクションから複数のドキュメントを取得する
 const q = query(
-  collection(db, 'posts'),
+  collection(db, "users", 'posts'),
   where('isDraft', '==', false),
   where('isTrash', '==', false),
   orderBy('create')
 )
 
-
 type props = {
   setTodo: any
 }
 // 今日の日付を取得
-const formatDate = (day) => {
+const formatDate = (day: any) => {
   const today = new Date();
   // Todayと同じ日程のタスクを出力
   if (day === "Today") {
@@ -66,7 +65,7 @@ const formatDate = (day) => {
   }
 };
 // formatDate();
-const formatDateforFirebase = (date) => {
+const formatDateforFirebase = (date: any) => {
   const today = new Date(date);
   const dayOfWeek = today.getDay();
   const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
@@ -80,11 +79,10 @@ export const AllContent = ({ filter }: any) => {
   const [posts, setPosts] = useRecoilState(postsState);
   const [userItem] = useRecoilState(userItemState);
 
-
   // useRouterを使用するために関数定義
   const router = useRouter()
 
-  // recoilで取得した値をonSnapshotで取得、mapで処理を回して全て表示
+  // firebaseからの値をonSnapshotで取得、mapで処理を回して全て表示
   // ※onSnapshotを実行すると最初に全てのドキュメントを取得するのでuseEffectで制御
   useEffect(() => {
     const unSub = onSnapshot(q, (querySnapshot) => {
@@ -157,6 +155,9 @@ export const AllContent = ({ filter }: any) => {
     postAddTask(postData);
   }
 
+  const q = query(collection('users', uid, 'task'))
+  const userTasks = await getDocs(q)
+
   return (
     <>
       <Box
@@ -165,7 +166,7 @@ export const AllContent = ({ filter }: any) => {
         pl={12} className='Mainbar'>
         <form onSubmit={onAddFormSubmit}>
           <Flex
-            color="#ffffff"
+            color="#WhiteAlpha 900"
             fontWeight='semibold'
             fontSize='large'
           >全て

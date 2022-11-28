@@ -1,3 +1,4 @@
+import { userItemState } from '@atoms/atom';
 import {
   Flex,
   Box,
@@ -13,14 +14,41 @@ import {
   Text
 } from '@chakra-ui/react';
 import { auth, provider } from '@hooks/firebase';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, User } from 'firebase/auth';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
+import { useRecoilState } from 'recoil';
 
 export default function Signin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userItem, setUserItem] = useRecoilState(userItemState);
+  const router = useRouter();
+
+  //SignIn処理
+  const handleSignIn = (event: any) => {
+    event.preventDefault();
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        //ユーザー情報取得処理しuserItemへ格納
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            const { email, uid } = user as User;
+            setUserItem({ ...userItem, email, uid });
+          }
+        });
+        router.push("../Tasks/All");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider)
   }
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
     const { email, password } = event.target.elements;
     signInWithEmailAndPassword(auth, email.value, password.value);
@@ -41,7 +69,7 @@ export default function Signin() {
           boxShadow={'lg'}
           p={8}>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSignIn}>
             <Stack spacing={4}>
               <FormControl id="email">
                 <FormLabel>Email address</FormLabel>
