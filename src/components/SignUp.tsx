@@ -18,14 +18,14 @@ import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithPopup } from 'firebase/auth';
 import { User, userItemState, isLoginState } from "../atoms/atom";
-import { provider } from '@hooks/firebase';
+import { provider } from '@lib/firebase';
 import { FcGoogle } from 'react-icons/fc';
 // ↓認証した状態を持たせることの出来るhooks
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from '../hooks/firebase';
+import { auth } from '../lib/firebase';
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import React from "react";
-import db from "../hooks/firebase";
+import db from "../lib/firebase";
 import { useRouter } from 'next/router';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 

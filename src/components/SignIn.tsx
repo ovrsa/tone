@@ -13,7 +13,7 @@ import {
   Center,
   Text
 } from '@chakra-ui/react';
-import { auth, provider } from '@hooks/firebase';
+import { auth, provider } from '@lib/firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, User } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -21,8 +21,6 @@ import { FcGoogle } from 'react-icons/fc';
 import { useRecoilState } from 'recoil';
 
 export default function Signin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [userItem, setUserItem] = useRecoilState(userItemState);
   const router = useRouter();
 

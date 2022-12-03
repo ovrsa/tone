@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import { useEffect } from 'react';
 // import { BsChevronDoubleRight } from 'react-icons/bs';
 import { useRecoilState } from 'recoil';
-import { postsState } from '../atoms/atom';
-import db from '../hooks/firebase';
+import { postsState, userItemState } from '../atoms/atom';
+import db from '../lib/firebase';
 import { ITodoData } from '../interfaces/todo';
 
 // (pages/task/All/[id]/index.tsx)からpropsでstateとstateの更新関数を使う形
@@ -16,6 +16,7 @@ type props = {
 
 export const Detail = ({ todo, setTodo }: props) => {
   const { query, isReady } = useRouter();
+  const [userItem] = useRecoilState(userItemState);
   const [posts] = useRecoilState(postsState)
 
   // useRouterからpostのidが取得できたら、setTodoにtodoをセットする
@@ -38,7 +39,7 @@ export const Detail = ({ todo, setTodo }: props) => {
    * formのsubmitが行われたら実行される
    * Firebase上のデータをinputとtextareaに入力された値に基づいて編集
    * 更新された後にTopへ遷移
-   * @param e 
+   * @param e
    */
   // postUpdateTaskという関数を作成
   const postUpdateTask = async (e: any) => {
@@ -49,7 +50,6 @@ export const Detail = ({ todo, setTodo }: props) => {
     // todoからtitleとdetailを分割代入し、setDocで直接指定できるような形に変換
     const { id, title, detail, start, share } = todo
 
-    // console.log(share)
     // Firebaseに送信する
     /**
    * 更新するタスクのオブジェクトに渡すプロパティ
@@ -58,12 +58,10 @@ export const Detail = ({ todo, setTodo }: props) => {
    * @param detail
    * @param start
    * @param share
-
    */
     // 第一引数で既存recoilのpostsから情報を引き出す
     // 第二引数入力した値を第一引数に上書きする、つまり更新
-    const post = setDoc(
-      doc(db, "posts", id), // 第一引数
+    const post = setDoc(doc(db, "users", userItem.uid, "posts", postData.id), // 第一引数
       { id, title, detail, start, share } // 第二引数
     );
     console.log(posts.start)

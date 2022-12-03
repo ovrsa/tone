@@ -1,5 +1,5 @@
 import SignUp from '@components/SignUp'
-import { auth } from '@hooks/firebase';
+import { auth } from '@lib/firebase';
 import React from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { AuthProvider } from '../context/AuthContext';
