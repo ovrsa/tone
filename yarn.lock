@@ -4587,10 +4587,10 @@
   "resolved" "https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-3.2.0.tgz"
   "version" "3.2.0"
 
-"react-firebase-hooks@^5.1.0":
-  "integrity" "sha512-R+2cRCNoA3pw3l9yI90up5/iVhNO3ZgRh+1PPBCj8nIZfcsZHLCktacRhXbzcKX0G47ldHXC9JLsFWOmjzvcxA=="
-  "resolved" "https://registry.npmjs.org/react-firebase-hooks/-/react-firebase-hooks-5.1.0.tgz"
-  "version" "5.1.0"
+"react-firebase-hooks@^5.1.1":
+  "integrity" "sha512-y2UpWs82xs+39q5Rc/wq316ca52QsC0n8m801V+yM4IC4hbfOL4yQPVSh7w+ydstdvjN9F+lvs1WrO2VYxpmdA=="
+  "resolved" "https://registry.npmjs.org/react-firebase-hooks/-/react-firebase-hooks-5.1.1.tgz"
+  "version" "5.1.1"
 
 "react-focus-lock@^2.9.1":
   "integrity" "sha512-pSWOQrUmiKLkffPO6BpMXN7SNKXMsuOakl652IBuALAu1esk+IcpJyM+ALcYzPTTFz1rD0R54aB9A4HuP5t1Wg=="

@@ -17,28 +17,18 @@ import {
   getDocs,
   doc,
   onSnapshot,
-  orderBy,
   query,
-  where,
   deleteDoc,
   setDoc
 } from "firebase/firestore"
-import db from "../hooks/firebase"
+import db from "../lib/firebase"
 import { v4 as uuidv4 } from 'uuid';
 import { ITodoData } from '../interfaces/todo'
 import Link from 'next/link';
-import { postsState } from "@atoms/atom"
+import { userItemState } from "@atoms/atom"
 import { useRecoilState } from 'recoil';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-
-// firebaseのコレクションから複数のドキュメントを取得する
-const q = query(
-  collection(db, 'posts'),
-  where('isDraft', '==', false),
-  where('isTrash', '==', false),
-  orderBy('create')
-)
 
 type props = {
   setTodo: any
@@ -46,20 +36,23 @@ type props = {
 
 export const SingleContent = ({ setTodo }: props) => {
   // recoilでatomから取得したグローバルの値
-  const [posts, setPosts] = useRecoilState(postsState);
+  const [posts, setPosts] = useState<any>("");
+  const [userItem] = useRecoilState(userItemState);
   const router = useRouter()
-
 
   // recoilで取得した値をonSnapshotで取得、mapで処理を回して全て表示
   // ※onSnapshotを実行すると最初に全てのドキュメントを取得するのでuseEffectで制御
   useEffect(() => {
+    const q = query(
+      collection(db, "users", userItem.uid, 'posts'),
+    )
     const unSub = onSnapshot(q, (querySnapshot) => {
       setPosts(
         querySnapshot.docs.map((post) => ({
           id: post.data().id,
           title: post.data().title,
           text: post.data().text,
-          start: post.data().start,
+          start: post.data()?.start ?? "",
           share: post.data().share
         }))
       )
@@ -69,10 +62,10 @@ export const SingleContent = ({ setTodo }: props) => {
 
   useEffect(() => {
     // データベースからデータを取得する
-    const postData = collection(db, "posts");
+    const postData = collection(db, "users", userItem.uid, "posts");
     getDocs(postData).then((snapShot) => {
       setPosts(snapShot.docs.map((doc) => ({ ...doc.data() })));
-      // ...: スプレッド記法、式を複数の要素に展開して、それぞれ関数呼び出す
+      // ...: スプレッド記法、式を複数の要素に展開してそれぞれ関数呼び出す
     });
 
     // リアルタイムで取得
@@ -85,7 +78,7 @@ export const SingleContent = ({ setTodo }: props) => {
   const handleDeletePost = async (targetPost: ITodoData) => {
     setPosts(posts.filter((post: any) => post !== targetPost))
     // postsにfilterをかけてクリックされたpostを抽出
-    await deleteDoc(doc(db, "posts", targetPost.id));
+    await deleteDoc(doc(db, "users", userItem.uid, "posts", targetPost.id));
   }
 
   /**
@@ -96,7 +89,7 @@ export const SingleContent = ({ setTodo }: props) => {
     /**
      * Firebaseに送信する
      */
-    const post = setDoc(doc(db, "posts", postData.id), postData);
+    const post = setDoc(doc(db, "users", userItem.uid, "posts", postData.id), postData);
 
     post.then(() => {
       // inputを空に
@@ -115,13 +108,11 @@ export const SingleContent = ({ setTodo }: props) => {
     const postData: any = {
       id: uuidv4(),
       title: e.target.elements["title"].value,
-      // detail: e.target.elements["detail"].value,
       // start: e.target.elements["start"].value,
-      // end: e.target.elements["end"].value
-
     }
     postAddTask(postData);
   }
+  console.log(posts)
   return (
     <>
       <Box
@@ -145,10 +136,10 @@ export const SingleContent = ({ setTodo }: props) => {
         </Stack>
 
         <Stack>
-          {posts.map((post: any) => (
-            <>
+          {posts && posts.map((post: any) => (
+            <Box key={post.title}>
               <HStack>
-                <Box key={post.title}>
+                <Box>
                   <Button onClick={() => {
                     setTodo(post)
                     router.push(`/Tasks/All/${post.id}`)
@@ -158,10 +149,9 @@ export const SingleContent = ({ setTodo }: props) => {
                 </Box>
 
                 <Box color={"blue.400"}>
-                  {post.start}
+                  {post.start ? new Date(post.start).toLocaleDateString() : ""}
                 </Box>
 
-                {/* 削除アイコン */}
                 <Link href='./' passHref>
                   <Box>
                     <IconButton
@@ -176,7 +166,7 @@ export const SingleContent = ({ setTodo }: props) => {
                 </Link>
 
               </HStack >
-            </>
+            </Box>
           ))}
         </Stack >
       </Box >

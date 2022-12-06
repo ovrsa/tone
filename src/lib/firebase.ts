@@ -1,7 +1,8 @@
+// InitializeAppがフロントエンドとfirebaseを接続する役目
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import {getAuth} from "firebase/auth"
+import { getAuth } from "firebase/auth"
 import { GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -15,7 +16,7 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig)
 export const storage = getStorage();
-const db = getFirestore();
+const db = getFirestore(app);
 const auth = getAuth();
 // ↓クリックした際にアカウントの選定を行う
 const provider = new GoogleAuthProvider()
