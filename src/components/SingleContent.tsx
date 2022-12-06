@@ -25,18 +25,18 @@ import db from "../lib/firebase"
 import { v4 as uuidv4 } from 'uuid';
 import { ITodoData } from '../interfaces/todo'
 import Link from 'next/link';
-import { postsState, userItemState } from "@atoms/atom"
+import { userItemState } from "@atoms/atom"
 import { useRecoilState } from 'recoil';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 type props = {
   setTodo: any
 }
 
-export const SingleContent = ({ setTodo }:props) => {
+export const SingleContent = ({ setTodo }: props) => {
   // recoilでatomから取得したグローバルの値
-  const [posts, setPosts] = useRecoilState(postsState);
+  const [posts, setPosts] = useState<any>("");
   const [userItem] = useRecoilState(userItemState);
   const router = useRouter()
 
@@ -52,7 +52,7 @@ export const SingleContent = ({ setTodo }:props) => {
           id: post.data().id,
           title: post.data().title,
           text: post.data().text,
-          start: new Date(post.data().start).toLocaleDateString(),
+          start: post.data()?.start ?? "",
           share: post.data().share
         }))
       )
@@ -108,10 +108,11 @@ export const SingleContent = ({ setTodo }:props) => {
     const postData: any = {
       id: uuidv4(),
       title: e.target.elements["title"].value,
-      start: e.target.elements["start"].value,
+      // start: e.target.elements["start"].value,
     }
     postAddTask(postData);
   }
+  console.log(posts)
   return (
     <>
       <Box
@@ -135,10 +136,10 @@ export const SingleContent = ({ setTodo }:props) => {
         </Stack>
 
         <Stack>
-          {posts.map((post: any) => (
-            <>
+          {posts && posts.map((post: any) => (
+            <Box key={post.title}>
               <HStack>
-                <Box key={post.title}>
+                <Box>
                   <Button onClick={() => {
                     setTodo(post)
                     router.push(`/Tasks/All/${post.id}`)
@@ -148,10 +149,9 @@ export const SingleContent = ({ setTodo }:props) => {
                 </Box>
 
                 <Box color={"blue.400"}>
-                  {post.start}
+                  {post.start ? new Date(post.start).toLocaleDateString() : ""}
                 </Box>
 
-                {/* 削除アイコン */}
                 <Link href='./' passHref>
                   <Box>
                     <IconButton
@@ -166,7 +166,7 @@ export const SingleContent = ({ setTodo }:props) => {
                 </Link>
 
               </HStack >
-            </>
+            </Box>
           ))}
         </Stack >
       </Box >

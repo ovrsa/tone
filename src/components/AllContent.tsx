@@ -105,7 +105,7 @@ export const AllContent = ({ filter }: any) => {
     const postData: any = {
       id: uuidv4(),
       title: e.target.elements["title"].value,
-      start: e.target.elements["start"].value,
+      // start: e.target.elements["start"]?.value ?? "",
       share: true,
     }
     postAddTask(postData);
@@ -137,7 +137,7 @@ export const AllContent = ({ filter }: any) => {
         </Stack>
 
         <Stack>
-          {filteredPosts.map((post: any) => (
+          {filteredPosts && filteredPosts.map((post: any) => (
             <>
               {/* titleの文字はボタンで表示、router.pushで画面遷移 */}
               <HStack>
