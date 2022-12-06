@@ -2,10 +2,9 @@ import { Box, Textarea, Button, Input, Checkbox, Flex } from '@chakra-ui/react';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from "next/router";
 import { useEffect } from 'react';
-// import { BsChevronDoubleRight } from 'react-icons/bs';
 import { useRecoilState } from 'recoil';
-import { postsState } from '../atoms/atom';
-import db from '../hooks/firebase';
+import { postsState, userItemState } from '../atoms/atom';
+import db from '../lib/firebase';
 import { ITodoData } from '../interfaces/todo';
 
 // (pages/task/All/[id]/index.tsx)からpropsでstateとstateの更新関数を使う形
@@ -16,6 +15,7 @@ type props = {
 
 export const Detail = ({ todo, setTodo }: props) => {
   const { query, isReady } = useRouter();
+  const [userItem] = useRecoilState(userItemState);
   const [posts] = useRecoilState(postsState)
 
   // useRouterからpostのidが取得できたら、setTodoにtodoをセットする
@@ -38,7 +38,7 @@ export const Detail = ({ todo, setTodo }: props) => {
    * formのsubmitが行われたら実行される
    * Firebase上のデータをinputとtextareaに入力された値に基づいて編集
    * 更新された後にTopへ遷移
-   * @param e 
+   * @param e
    */
   // postUpdateTaskという関数を作成
   const postUpdateTask = async (e: any) => {
@@ -49,7 +49,6 @@ export const Detail = ({ todo, setTodo }: props) => {
     // todoからtitleとdetailを分割代入し、setDocで直接指定できるような形に変換
     const { id, title, detail, start, share } = todo
 
-    // console.log(share)
     // Firebaseに送信する
     /**
    * 更新するタスクのオブジェクトに渡すプロパティ
@@ -58,12 +57,10 @@ export const Detail = ({ todo, setTodo }: props) => {
    * @param detail
    * @param start
    * @param share
-
    */
     // 第一引数で既存recoilのpostsから情報を引き出す
     // 第二引数入力した値を第一引数に上書きする、つまり更新
-    const post = setDoc(
-      doc(db, "posts", id), // 第一引数
+    const post = setDoc(doc(db, "users", userItem.uid, "posts", todo.id), // 第一引数
       { id, title, detail, start, share } // 第二引数
     );
     console.log(posts.start)
@@ -84,7 +81,6 @@ export const Detail = ({ todo, setTodo }: props) => {
             value={todo.share}
             size="md"
             onChange={(e) => {
-              console.log(e.target.value)
               setTodo({ ...todo, share: e.target.value })
             }}
           >Google Calendarに共有
@@ -97,7 +93,7 @@ export const Detail = ({ todo, setTodo }: props) => {
               <Flex>日時
                 <Input
                   name="start"
-                  value={todo.start}
+                  value={todo && todo.start}
                   placeholder="Select Date and Time"
                   size="md"
                   type="datetime-local"
@@ -111,7 +107,7 @@ export const Detail = ({ todo, setTodo }: props) => {
                 name="title"
                 placeholder="title"
                 // value: 初期値
-                value={todo.title}
+                value={todo && todo.title}
                 // onchangeは入力欄や選択肢が変更された時に発生するイベント<input>、<select>、及び<textarea>要素で対応
                 // (e):イベントが発生したタイミングでsetTodoを呼び出す
                 // ...: スプレッド記法、式を複数の要素に展開して、それぞれ関数呼び出す
@@ -123,7 +119,7 @@ export const Detail = ({ todo, setTodo }: props) => {
               {/* テキストエリアもやっていること事は同じ */}
               <Textarea
                 name="detail"
-                value={todo.detail}
+                value={todo && todo.detail}
                 placeholder='Description'
                 onChange={(e) => setTodo({ ...todo, detail: e.target.value })} />
               <Button type="submit" colorScheme='teal'>更新</Button>

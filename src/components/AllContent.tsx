@@ -12,79 +12,37 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import {
-  collection,
   doc,
   onSnapshot,
-  orderBy,
-  query,
-  where,
   deleteDoc,
-  setDoc
+  setDoc,
+  collection,
+  query,
 } from "firebase/firestore"
-import db from "../hooks/firebase"
+import db from "../lib/firebase"
 import { v4 as uuidv4 } from 'uuid';
 import { ITodoData } from '../interfaces/todo'
 import Link from 'next/link';
-import { postsState } from "@atoms/atom"
+import { postsState, userItemState } from "@atoms/atom"
 import { useRecoilState } from 'recoil';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-
-// firebaseのコレクションから複数のドキュメントを取得する
-const q = query(
-  collection(db, 'posts'),
-  where('isDraft', '==', false),
-  where('isTrash', '==', false),
-  orderBy('create')
-)
-
-type props = {
-  setTodo: any
-}
-// 今日の日付を取得
-const formatDate = (day) => {
-  const today = new Date();
-  // Todayと同じ日程のタスクを出力
-  if (day === "Today") {
-    const dayOfWeek = today.getDay();
-    const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
-    const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr;
-    return todayValue
-  } else if (day === "Tomorrow") {
-    // Tomorrowと同じ日程のタスクを出力
-    const dayOfWeek = today.getDay() + 1;
-    const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
-    const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate() + 1) + "/" + dayOfWeekStr;
-    return todayValue
-  } else {
-    // 本日の値以下のタスクを出力
-    const dayOfWeek = today.getDay() + 7;
-    const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
-    const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate() + 7) + "/" + dayOfWeekStr;
-    return todayValue
-  }
-};
-// formatDate();
-const formatDateforFirebase = (date) => {
-  const today = new Date(date);
-  const dayOfWeek = today.getDay();
-  const dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
-  const todayValue = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + "/" + dayOfWeekStr;
-  return todayValue
-}
-formatDateforFirebase("");
+import { formatDate, formatDateforFirebase } from '@utils/formatData';
 
 export const AllContent = ({ filter }: any) => {
   // recoilでatomから取得したグローバルの値
   const [posts, setPosts] = useRecoilState(postsState);
-  // useStateで絞り込みの値を保存
-
+  const [userItem] = useRecoilState(userItemState);
   // useRouterを使用するために関数定義
   const router = useRouter()
 
-  // recoilで取得した値をonSnapshotで取得、mapで処理を回して全て表示
+  // firebaseからの値をonSnapshotで取得、mapで処理を回して全て表示
   // ※onSnapshotを実行すると最初に全てのドキュメントを取得するのでuseEffectで制御
   useEffect(() => {
+    // firebaseのコレクションから複数のドキュメントを取得する
+    const q = query(
+      collection(db, "users", userItem.uid, 'posts'),
+    )
     const unSub = onSnapshot(q, (querySnapshot) => {
       setPosts(
         querySnapshot.docs.map((post) => ({
@@ -118,7 +76,7 @@ export const AllContent = ({ filter }: any) => {
   const handleDeletePost = async (targetPost: ITodoData) => {
     setPosts(posts.filter((post: any) => post !== targetPost))
     // postsにfilterをかけてクリックされたpostを抽出
-    await deleteDoc(doc(db, "posts", targetPost.id));
+    await deleteDoc(doc(db, "users", userItem.uid, "posts", targetPost.id));
   }
 
   /**
@@ -129,7 +87,7 @@ export const AllContent = ({ filter }: any) => {
     /**
      * Firebaseに送信する
      */
-    const post = setDoc(doc(db, "posts", postData.id), postData);
+    const post = setDoc(doc(db, "users", userItem.uid, "posts", postData.id), postData);
     post.then(() => {
       // inputを空に
     })
@@ -147,10 +105,8 @@ export const AllContent = ({ filter }: any) => {
     const postData: any = {
       id: uuidv4(),
       title: e.target.elements["title"].value,
-      share: true
-      // detail: e.target.elements["detail"].value,
-      // start: e.target.elements["start"].value,
-      // end: e.target.elements["end"].value
+      // start: e.target.elements["start"]?.value ?? "",
+      share: true,
     }
     postAddTask(postData);
   }
@@ -163,7 +119,7 @@ export const AllContent = ({ filter }: any) => {
         pl={12} className='Mainbar'>
         <form onSubmit={onAddFormSubmit}>
           <Flex
-            color="#ffffff"
+            color="#WhiteAlpha 900"
             fontWeight='semibold'
             fontSize='large'
           >全て
@@ -181,7 +137,7 @@ export const AllContent = ({ filter }: any) => {
         </Stack>
 
         <Stack>
-          {filteredPosts.map((post: any) => (
+          {filteredPosts && filteredPosts.map((post: any) => (
             <>
               {/* titleの文字はボタンで表示、router.pushで画面遷移 */}
               <HStack>
@@ -230,4 +186,4 @@ export const AllContent = ({ filter }: any) => {
       ></Box>
     </>
   );
-} 
+}

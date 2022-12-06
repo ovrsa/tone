@@ -1,7 +1,7 @@
 // firebaseでログイン状態を管理をする際の記述
 // useContextを使用し、全てのコンポーネントでユーザー情報の共有
 import { createContext, useState, useContext, useEffect } from 'react';
-import { auth } from '../hooks/firebase';
+import { auth } from '../lib/firebase';
 
 const AuthContext = createContext();
 
