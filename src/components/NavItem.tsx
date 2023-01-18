@@ -5,10 +5,11 @@ import { IconType } from "react-icons";
 // NavItemPropsの型
 interface NavItemProps extends FlexProps {
   icon: IconType;
+  name?: string
 }
 
-// NavItemの呼び出し関数
-export const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+//NavItem: 1、2層目のアイコン、文字見た目のデータ
+export const NavItem = ({ icon, name, children, ...rest }: NavItemProps) => {
   return (
     <Link href="#"
       style={{ textDecoration: 'none' }
@@ -20,9 +21,13 @@ export const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
         borderRadius="lg"
         role="group"
         cursor="pointer"
-        _hover={{
-          bg: 'cyan.400',
-          color: 'white',
+        bg={rest.filter === name ?
+          'gray.600'
+          : ""}
+        _hover=
+        {{
+          bg: 'gray.600',
+          color: 'white'
         }}
         {...rest}>
         {icon && (

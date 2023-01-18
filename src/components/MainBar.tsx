@@ -1,29 +1,33 @@
+import { filteredPostsLengthState } from "@atoms/atom"
 import { useColorModeValue, Button, Box } from "@chakra-ui/react"
 import { MainItems } from "@constants"
+import { useRecoilValue } from "recoil"
 import { NavItem } from "./NavItem"
+import { PriorityFilter } from "./PriorityFilter"
 
-export const MainBar = ({ filter, setFilter }: any) => {
-  console.log(filter)
+// MainBar:2層目を成すコンポーネント
+export const MainBar = ({ filter, setFilter, filterOption, setFilterOption }: any) => {
+  // daysFilter:recoilで管理、AllContentで配列定義
+  const daysFilterTaskList = useRecoilValue(filteredPostsLengthState)
   return (
     <Box
       flex={"1"}
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: 60 }
-      }
-      // pos:positionの事 fixed:画面の決まった位置に固定する
-      // pos="fixed"
+      w={{ base: 'full', md: 60 }}
       h="100vh"
     >
-      {/* justifyContent: フレックスコンテナの主軸およびグリッドコンテナーのインライン軸に沿って、中身のアイテムの間や周囲に間隔を配置する*/}
-
+      {/* {filter === "All" && <PriorityFilter filterOption={filterOption} setFilterOption={setFilterOption} />} */}
+      <PriorityFilter filterOption={filterOption} setFilterOption={setFilterOption} />
       {
+        // MainItems:2層のリストが詰まっている
         MainItems.map((link: any) => (
-          <NavItem key={link.name} icon={link.icon} mt={1} >
+          // NavItem:1層と2層のコンポーネント
+          <NavItem key={link.name} icon={link.icon} mt={1} filter={filter} name={link.name}>
             <Button
               onClick={() => setFilter(link.name)}>
-              {link.name}
+              {link.name}:{daysFilterTaskList[link.name]}
             </Button>
           </NavItem>
         ))

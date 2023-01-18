@@ -23,18 +23,37 @@ import db from "../lib/firebase"
 import { v4 as uuidv4 } from 'uuid';
 import { ITodoData } from '../interfaces/todo'
 import Link from 'next/link';
-import { postsState, userItemState } from "@atoms/atom"
-import { useRecoilState } from 'recoil';
+import { postsState, userItemState, filteredPostsLengthState } from "@atoms/atom"
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { formatDate, formatDateforFirebase } from '@utils/formatData';
 
-export const AllContent = ({ filter }: any) => {
-  // recoilでatomから取得したグローバルの値
+export const AllContent = ({ filter, filterOption }: any) => {
   const [posts, setPosts] = useRecoilState(postsState);
   const [userItem] = useRecoilState(userItemState);
-  // useRouterを使用するために関数定義
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [priorityFilteredPost, setPriorityFilteredPost] = useState([]);
   const router = useRouter()
+  const colors = { High: "red", Middle: "yellow", Low: "blue" }
+  const setFilteredPostsLength = useSetRecoilState(filteredPostsLengthState)
+
+  // 日時によってのタスクの数を算出
+  const allLength = posts.length
+  const todayLength = posts.filter((post: any) => formatDate("Today") === formatDateforFirebase(post.start)).length
+  const tomorrowLength = posts.filter((post: any) => formatDate("Tomorrow") === formatDateforFirebase(post.start)).length
+  const next7DaysLength = posts.filter((post: any) => formatDate("Next7Days") >= formatDateforFirebase(post.start)).length
+  const completedLength = posts.filter((post: any) => formatDate("Completed") >= formatDateforFirebase(post.start)).length
+
+  // 関数を一通りdaysFilterTaskListオブジェクトに纏める
+  const daysFilterTaskList = {
+    All: allLength,
+    Today: todayLength,
+    Tomorrow: tomorrowLength,
+    Next7Days: next7DaysLength,
+    Completed: completedLength,
+  }
+  setFilteredPostsLength(daysFilterTaskList)
 
   // firebaseからの値をonSnapshotで取得、mapで処理を回して全て表示
   // ※onSnapshotを実行すると最初に全てのドキュメントを取得するのでuseEffectで制御
@@ -50,16 +69,15 @@ export const AllContent = ({ filter }: any) => {
           title: post.data().title,
           text: post.data().text,
           start: new Date(post.data().start).toLocaleDateString(),
-          share: post.data().share
+          share: post.data().share,
+          priority: post.data().priority
         }))
       )
     })
     return () => unSub()
   }, [])
 
-  const [filteredPosts, setFilteredPosts] = useState([]);
-
-  // MainBarのタブによって配列の操作を表現
+  // All,Todayなどでのタスクの配列操作
   useEffect(() => {
     if (filter === "Today") {
       setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
@@ -67,10 +85,16 @@ export const AllContent = ({ filter }: any) => {
       setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
     } else if (filter === "Next 7 Days") {
       setFilteredPosts(posts.filter((post: any) => formatDate(filter) >= formatDateforFirebase(post.start)));
+    } else if (filter === "Completed") {
+      setFilteredPosts(posts.filter((post: any) => formatDate(filter) >= formatDateforFirebase(post.start)))
     } else if (filter === "All") {
       setFilteredPosts(posts)
     };
   }, [posts, filter])
+
+  useEffect(() => {
+    setPriorityFilteredPost(filteredPosts.filter((post: any) => post.priority === filterOption));
+  }, [filteredPosts, filterOption])
 
   //削除関数
   const handleDeletePost = async (targetPost: ITodoData) => {
@@ -98,14 +122,12 @@ export const AllContent = ({ filter }: any) => {
    * @param e HTMLイベント
    */
   const onAddFormSubmit = (e: any) => {
-    // 本来のSubmitの機能を停止
     e.preventDefault();
 
     // const postData: ITodoData = {
     const postData: any = {
       id: uuidv4(),
       title: e.target.elements["title"].value,
-      // start: e.target.elements["start"]?.value ?? "",
       share: true,
     }
     postAddTask(postData);
@@ -116,7 +138,7 @@ export const AllContent = ({ filter }: any) => {
       <Box
         flex={"1"}
         h="100vh"
-        pl={12} className='Mainbar'>
+        className='Mainbar'>
         <form onSubmit={onAddFormSubmit}>
           <Flex
             color="#WhiteAlpha 900"
@@ -133,46 +155,81 @@ export const AllContent = ({ filter }: any) => {
         </form>
 
         {/* ポスト */}
-        <Stack direction='row' p={2}>
+        <Stack direction='row'>
         </Stack>
-
-        <Stack>
-          {filteredPosts && filteredPosts.map((post: any) => (
-            <>
-              {/* titleの文字はボタンで表示、router.pushで画面遷移 */}
-              <HStack>
-                <Box key={post.title}>
-                  <Button onClick={() => {
-                    router.push(`/Tasks/All/${post.id}`)
-                  }}>
-                    <a>{post.title}</a>
-                  </Button>
-                </Box>
-
-                {/* 時間表示 */}
-                <Box color={"blue.400"}>
-                  {post.start}
-                </Box>
-
-                {/* 削除アイコン */}
-                <Link href='./' passHref>
-                  <Box>
-                    <IconButton
-                      variant='outline'
-                      colorScheme='teal'
-                      aria-label='DeleteIcon'
-                      border="0"
-                      onClick={() => handleDeletePost(post)}
-                      icon={<DeleteIcon />}
-                    />
+        {filterOption === "All" ? (
+          <Stack>
+            {filteredPosts && filteredPosts.map((post: any) => (
+              <>
+                {/* titleの文字はボタンで表示、router.pushで画面遷移 */}
+                <HStack>
+                  <Box key={post.title}>
+                    <Button colorScheme={colors[post.priority]} onClick={() => {
+                      router.push(`/Tasks/All/${post.id}`)
+                    }}>
+                      <a>{post.title}</a>
+                    </Button>
                   </Box>
-                </Link>
 
-              </HStack >
-            </>
-          ))}
-        </Stack >
+                  {/* 時間表示 */}
+                  <Box color={"blue.400"}>
+                    {post.start}
+                  </Box>
 
+                  {/* 削除アイコン */}
+                  <Link href='../Tasks/All' passHref>
+                    <Box>
+                      <IconButton
+                        variant='outline'
+                        colorScheme='teal'
+                        aria-label='DeleteIcon'
+                        border="0"
+                        onClick={() => handleDeletePost(post)}
+                        icon={<DeleteIcon />}
+                      />
+                    </Box>
+                  </Link>
+
+                </HStack >
+              </>
+            ))}
+          </Stack >) : (<Stack>
+            {filteredPosts && priorityFilteredPost.map((post: any) => (
+              <>
+                {/* titleの文字はボタンで表示、router.pushで画面遷移 */}
+                <HStack>
+                  <Box key={post.title}>
+                    <Button onClick={() => {
+                      router.push(`/Tasks/All/${post.id}`)
+                    }}>
+                      <a>{post.title}</a>
+                    </Button>
+                  </Box>
+
+                  {/* 時間表示 */}
+                  <Box color={"blue.400"}>
+                    {post.start}
+                  </Box>
+
+                  {/* 削除アイコン */}
+                  <Link href='../Tasks/All' passHref>
+                    <Box>
+                      <IconButton
+                        variant='outline'
+                        colorScheme='teal'
+                        aria-label='DeleteIcon'
+                        border="0"
+                        onClick={() => handleDeletePost(post)}
+                        icon={<DeleteIcon />}
+                      />
+                    </Box>
+                  </Link>
+
+                </HStack >
+              </>
+            ))}
+          </Stack >)
+        }
       </Box >
       <Box
         bg={useColorModeValue('white', 'gray.900')}
@@ -180,8 +237,6 @@ export const AllContent = ({ filter }: any) => {
         borderRightColor={useColorModeValue('gray.200', 'gray.700')}
         w={{ base: 'full', md: 12 }
         }
-        // pos:positionの事 fixed:画面の決まった位置に固定する
-        // pos="fixed"
         h="100vh"
       ></Box>
     </>
