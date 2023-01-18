@@ -6,6 +6,7 @@ interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
 
+// MobileNav:Mobile状態のアイコン、文字の情報
 export const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   return (
     <Flex

@@ -11,22 +11,23 @@ import { AllContent } from '@components/AllContent';
 import { SidebarContent } from '@components/SidebarContent';
 import { MainBar } from '@components/MainBar';
 import { MobileNav } from '@components/MobileNav';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 
-// Sidebar関数
 // children:全ての子要素を取得するプロパティ
+// AllPage:タスク未選択時の画面
 export default function AllPage() {
   // isOpen: 折りたたみを発火させる際のトリガー
   // useDisclosure: chakra-uiのカスタムフック、開く、閉じるの支援
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [filter, setFilter] = useState("All")
+  const [filterOption, setFilterOption] = useState("All");
   return (
-    // minH:要素の最小高
     <Box
-      p={"0"}
       minH="100vh"
       bg={useColorModeValue('gray.100', 'gray.900')}
     >
       <SidebarContent
+        filter={filter}
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
       />
@@ -41,16 +42,20 @@ export default function AllPage() {
         onOverlayClick={onClose}
         size="xs">
         <DrawerContent>
-          <SidebarContent onClose={onClose} />
+          <SidebarContent filter={filter} onClose={onClose} />
         </DrawerContent>
       </Drawer>
 
-      {/* mobilenav */}
-      {/* display={{}}: レスポンシブ構文 */}
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
+
+      {/* タスク未選択時の画面描画割 */}
       <Flex ml={{ base: 0, md: 60 }} p="0">
-        <MainBar filter={filter} setFilter={setFilter} />
-        <AllContent filter={filter} />
+        <MainBar filterOption={filterOption} setFilterOption={setFilterOption} filter={filter} setFilter={setFilter} flex-basis={'20%'} />
+        <AllContent filterOption={filterOption} filter={filter} flex-basis={'100%'} />
+        <Box flex-basis={'100%'}>
+          <ExternalLinkIcon />
+          Click task title to view the detail
+        </Box>
       </Flex>
     </Box>
   );
