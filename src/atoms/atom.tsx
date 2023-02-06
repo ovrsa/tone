@@ -15,7 +15,7 @@ export const postsState = atom({
     {
       create: "",
       id: "",
-      text: "",
+      detail: "",
       title: "",
       start: "",
       share: "",

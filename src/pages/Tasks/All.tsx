@@ -49,11 +49,11 @@ export default function AllPage() {
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
 
       {/* タスク未選択時の画面描画割 */}
-      <Flex ml={{ base: 0, md: 60 }} p="0">
+      <Flex ml={{ base: 0, md: 60 }}>
         <MainBar filterOption={filterOption} setFilterOption={setFilterOption} filter={filter} setFilter={setFilter} flex-basis={'20%'} />
         <AllContent filterOption={filterOption} filter={filter} flex-basis={'100%'} />
-        <Box flex-basis={'100%'}>
-          <ExternalLinkIcon />
+        <Box display="flex" justifyContent="center" alignItems="center" flex-basis="100%" flex="1.6">
+          <ExternalLinkIcon fontSize={20} pr={1} />
           Click task title to view the detail
         </Box>
       </Flex>

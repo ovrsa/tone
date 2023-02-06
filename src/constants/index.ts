@@ -8,7 +8,7 @@ export interface LinkItemProps {
 // LinkItems：1層の文字、アイコンデータ
 export const LinkItems: Array<LinkItemProps> = [
   { name: 'Tasks', icon: AddIcon },
-  { name: 'Setting', icon: SettingsIcon }
+  // { name: 'Setting', icon: SettingsIcon }
 ];
 
 // MainItems：2層の文字、アイコンデータ

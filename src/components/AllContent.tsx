@@ -4,10 +4,10 @@ import {
 import {
   Box,
   Button,
-  Flex,
   HStack,
   IconButton,
   Input,
+  Spacer,
   Stack,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -67,7 +67,7 @@ export const AllContent = ({ filter, filterOption }: any) => {
         querySnapshot.docs.map((post) => ({
           id: post.data().id,
           title: post.data().title,
-          text: post.data().text,
+          detail: post.data().detail,
           start: new Date(post.data().start).toLocaleDateString(),
           share: post.data().share,
           priority: post.data().priority
@@ -79,18 +79,27 @@ export const AllContent = ({ filter, filterOption }: any) => {
 
   // All,Todayなどでのタスクの配列操作
   useEffect(() => {
-    if (filter === "Today") {
-      setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
-    } else if (filter === "Tomorrow") {
-      setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
-    } else if (filter === "Next 7 Days") {
-      setFilteredPosts(posts.filter((post: any) => formatDate(filter) >= formatDateforFirebase(post.start)));
-    } else if (filter === "Completed") {
-      setFilteredPosts(posts.filter((post: any) => formatDate(filter) >= formatDateforFirebase(post.start)))
-    } else if (filter === "All") {
-      setFilteredPosts(posts)
-    };
+    switch (filter) {
+      case "Today":
+        setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
+        break;
+      case "Tomorrow":
+        setFilteredPosts(posts.filter((post: any) => formatDate(filter) === formatDateforFirebase(post.start)));
+        break;
+      case "Next7Days":
+        setFilteredPosts(posts.filter((post: any) => formatDate(filter) >= formatDateforFirebase(post.start)));
+        break;
+      case "Completed":
+        setFilteredPosts(posts.filter((post: any) => formatDate(filter) <= formatDateforFirebase(post.start)));
+        break;
+      case "All":
+        setFilteredPosts(posts);
+        break;
+      default:
+        break;
+    }
   }, [posts, filter])
+
 
   useEffect(() => {
     setPriorityFilteredPost(filteredPosts.filter((post: any) => post.priority === filterOption));
@@ -117,6 +126,17 @@ export const AllContent = ({ filter, filterOption }: any) => {
     })
   };
 
+  const date = new Date();
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Tokyo"
+  };
+  const formattedDate = date.toLocaleString("ja-JP", options);
+
   /**
    * 変更イベントで呼び出される関数
    * @param e HTMLイベント
@@ -128,6 +148,9 @@ export const AllContent = ({ filter, filterOption }: any) => {
     const postData: any = {
       id: uuidv4(),
       title: e.target.elements["title"].value,
+      details: '',
+      start: formattedDate,
+      priority: '',
       share: true,
     }
     postAddTask(postData);
@@ -138,14 +161,10 @@ export const AllContent = ({ filter, filterOption }: any) => {
       <Box
         flex={"1"}
         h="100vh"
+        pl={2}
         className='Mainbar'>
         <form onSubmit={onAddFormSubmit}>
-          <Flex
-            color="#WhiteAlpha 900"
-            fontWeight='semibold'
-            fontSize='large'
-          >全て
-          </Flex>
+
           <label htmlFor="todo"></label>
           <Input
             name="title"
@@ -155,8 +174,9 @@ export const AllContent = ({ filter, filterOption }: any) => {
         </form>
 
         {/* ポスト */}
-        <Stack direction='row'>
+        <Stack direction='row' >
         </Stack>
+
         {filterOption === "All" ? (
           <Stack>
             {filteredPosts && filteredPosts.map((post: any) => (
@@ -164,17 +184,25 @@ export const AllContent = ({ filter, filterOption }: any) => {
                 {/* titleの文字はボタンで表示、router.pushで画面遷移 */}
                 <HStack>
                   <Box key={post.title}>
-                    <Button colorScheme={colors[post.priority]} onClick={() => {
-                      router.push(`/Tasks/All/${post.id}`)
-                    }}>
+                    <Button
+                      colorScheme={colors[post.priority]}
+                      onClick={() => {
+                        console.log('all')
+                        router.push({
+                          pathname: `/Tasks/All/${post.id}`,
+                          query: post
+                        })
+                      }}>
                       <a>{post.title}</a>
                     </Button>
                   </Box>
 
                   {/* 時間表示 */}
-                  <Box color={"blue.400"}>
+                  <Box>
                     {post.start}
                   </Box>
+
+                  <Spacer />
 
                   {/* 削除アイコン */}
                   <Link href='../Tasks/All' passHref>
@@ -196,20 +224,26 @@ export const AllContent = ({ filter, filterOption }: any) => {
           </Stack >) : (<Stack>
             {filteredPosts && priorityFilteredPost.map((post: any) => (
               <>
-                {/* titleの文字はボタンで表示、router.pushで画面遷移 */}
                 <HStack>
                   <Box key={post.title}>
-                    <Button onClick={() => {
-                      router.push(`/Tasks/All/${post.id}`)
-                    }}>
+                    <Button
+                      colorScheme={colors[post.priority]}
+                      onClick={() => {
+                        router.push({
+                          pathname: `/Tasks/All/${post.id}`,
+                          query: post
+                        })
+                      }}>
                       <a>{post.title}</a>
                     </Button>
                   </Box>
 
                   {/* 時間表示 */}
-                  <Box color={"blue.400"}>
+                  <Box>
                     {post.start}
                   </Box>
+
+                  <Spacer />
 
                   {/* 削除アイコン */}
                   <Link href='../Tasks/All' passHref>
@@ -224,7 +258,6 @@ export const AllContent = ({ filter, filterOption }: any) => {
                       />
                     </Box>
                   </Link>
-
                 </HStack >
               </>
             ))}
@@ -235,8 +268,7 @@ export const AllContent = ({ filter, filterOption }: any) => {
         bg={useColorModeValue('white', 'gray.900')}
         borderRight="1px"
         borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-        w={{ base: 'full', md: 12 }
-        }
+        w={{ base: 'full', md: 2 }}
         h="100vh"
       ></Box>
     </>
