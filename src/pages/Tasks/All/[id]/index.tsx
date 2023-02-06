@@ -47,8 +47,17 @@ export default function SinglePage() {
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
 
       <Flex ml={{ base: 0, md: 60 }} p="0" h="100vh">
-        <MainBar filterOption={filterOption} setFilterOption={setFilterOption} filter={filter} setFilter={setFilter} flex-basis={'20%'} />
-        <SingleContent filterOption={filterOption} filter={filter} flex-basis={'100%'} setTodo={setCurrentTodo} />
+        <MainBar
+          filterOption={filterOption}
+          setFilterOption={setFilterOption}
+          filter={filter}
+          setFilter={setFilter}
+          flex-basis={'20%'} />
+        <SingleContent
+          filterOption={filterOption}
+          filter={filter}
+          flex-basis={'100%'}
+          setTodo={setCurrentTodo} />
         <Detail
           flex-basis={'100%'}
           todo={currentTodo}
