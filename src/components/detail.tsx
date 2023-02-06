@@ -1,4 +1,4 @@
-import { Box, Textarea, Button, Input, Checkbox, Flex } from '@chakra-ui/react';
+import { Box, Textarea, Input, Flex } from '@chakra-ui/react';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from "next/router";
 import { useEffect } from 'react';
@@ -20,103 +20,72 @@ export const Detail = ({ todo, setTodo }: props) => {
   const [userItem] = useRecoilState(userItemState);
   const [posts] = useRecoilState(postsState)
 
-  // isReady: routerが完全に準備出来ているかを示すフラグ
-  // useEffectでしか使わないようにすること
-  // https://qiita.com/Anders/items/ad91c6752c512716f82a
-  useEffect(() => {
-    if (isReady) {
-      const todo: ITodoData = posts.find((post: ITodoData) => {
-        return post.id === query.id;
-      });
-      setTodo(todo)
-    }
-    return
-  }, [isReady]);
+  // useEffect(() => {
+  //   if () {
+  //     setTodo({
+  //       id: query.id,
+  //       priority: query.priority,
+  //       share: query.share,
+  //       start: query.start,
+  //       detail: query.detail,
+  //       title: query.title
+  //     })
+  //   }
+  // }, [])
 
   /**
-   * formのsubmitが行われたら実行される
-   * Firebase上のデータをinputとtextareaに入力された値に基づいて編集
-   * 更新された後にTopへ遷移
    * @param e
    */
 
-  // postUpdateTask:タスクを編集する関数
-  const postUpdateTask = async (e: any) => {
-    e.preventDefault()
+  const postUpdateTask = async (e) => {
+    e.preventDefault();
 
-    // todoからtitleとdetailを分割代入し、setDocで直接指定できるような形に変換
-    const { id, title, detail, start, share, priority } = todo
-    // Firebaseに送信する
-    /**
-   * 更新するタスクのオブジェクトに渡すプロパティ
-   * @param id 
-   * @param title
-   * @param detail
-   * @param start
-   * @param share
-   * @param priority
-   */
-    // 第一引数で既存recoilのpostsから情報を引き出す
-    // 第二引数入力した値を第一引数に上書きする、つまり更新
-    const post = setDoc(doc(db, "users", userItem.uid, "posts", todo.id), // 第一引数
-      { id, title, detail, start, share, priority } // 第二引数
-    );
-  }
+    const { id, title, detail, start, share, priority } = todo;
+    const post = setDoc(doc(db, "users", userItem.uid, "posts", todo.id),
+      { id, title, detail, start, share, priority });
+    console.log(post);
+  };
 
   return (
-    <Box
-      flex={"1"}>
-      {/* todoの情報が入っている場合のみ以下の部分をレンダリング */}
-      {/* undefined: 値が代入されていない状態 */}
-      {/* &&(論理積): 全てがtrueである場合のみtrue */}
-      {todo !== undefined &&
-        <Box pl={12}>
-          <Checkbox
+    <Box flex="1.6">
+      {todo && (
+        <Box p={2}>
+          <form onBlur={postUpdateTask}>
+            {/* <Checkbox
             name="share"
             value={todo.share}
             size="md"
             onChange={(e) => {
               setTodo({ ...todo, share: e.target.value })
             }}
-          >Google Calendarに共有
-          </Checkbox>
-          {/* 前回保存したデータ */}
-          <>
-            <form onSubmit={postUpdateTask}>
-              <PriorityButton todo={todo} setTodo={setTodo}></PriorityButton>
-              <Flex>日時
-                <Input
-                  name="start"
-                  value={todo && todo.start}
-                  placeholder="Select Date and Time"
-                  size="md"
-                  type="datetime-local"
-                  onChange={(e) => {
-                    setTodo({ ...todo, start: e.target.value })
-                  }} />
-              </Flex>
+            >Google Calendarに共有
+          </Checkbox> */}
+            <Flex align="center">
+              <PriorityButton todo={todo} setTodo={setTodo} />
               <Input
-                name="title"
-                placeholder="title"
-                value={todo && todo.title}
-                onChange={(e) => setTodo({ ...todo, title: e.target.value })} />
-
-              <Textarea
-                name="detail"
-                value={todo && todo.detail}
-                placeholder='Description'
-                onChange={(e) => setTodo({ ...todo, detail: e.target.value })} />
-              <Button
-                type="submit"
-                colorScheme='teal'
-              >
-                更新
-              </Button>
-            </form>
-          </>
-        </Box >
-      }
-    </Box >
-
-  )
+                name="start"
+                value={todo.start}
+                size="md"
+                type="datetime-local"
+                onChange={(e) => setTodo({ ...todo, start: e.target.value })}
+              />
+            </Flex>
+            <Input
+              name="title"
+              placeholder="title"
+              value={todo.title}
+              onChange={(e) => setTodo({ ...todo, title: e.target.value })}
+            />
+            <Textarea
+              name="detail"
+              height="70vh"
+              value={todo.detail}
+              placeholder="detail"
+              onChange={(e) => setTodo({ ...todo, detail: e.target.value })}
+            />
+          </form>
+        </Box>
+      )}
+    </Box>
+  );
 }

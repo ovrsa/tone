@@ -4,7 +4,6 @@ import {
 import {
   Box,
   Button,
-  Flex,
   HStack,
   IconButton,
   Input,
@@ -31,18 +30,15 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 const colors = { High: "red", Middle: "yellow", Low: "blue" }
 
-
 type props = {
   setTodo: any
 }
 
-// SingleContent:
 export const SingleContent = ({ setTodo, filterOption }: props) => {
   const [posts, setPosts] = useState<any>("");
   const [userItem] = useRecoilState(userItemState);
   const router = useRouter()
   const handleAddFormChanges = () => {
-    setPosts("")
   }
 
   useEffect(() => {
@@ -54,7 +50,7 @@ export const SingleContent = ({ setTodo, filterOption }: props) => {
         querySnapshot.docs.map((post) => ({
           id: post.data().id,
           title: post.data().title,
-          text: post.data().text,
+          detail: post.data().detail,
           start: post.data()?.start ?? "",
           share: post.data().share,
           priority: post.data().priority,
@@ -84,17 +80,24 @@ export const SingleContent = ({ setTodo, filterOption }: props) => {
 
   /**
    * タスクを追加する
-   * @param postData 送信するデータ
+   * @param postData
    */
   const postAddTask = async (postData: ITodoData) => {
-    /**
-     * Firebaseに送信する
-     */
     const post = setDoc(doc(db, "users", userItem.uid, "posts", postData.id), postData);
     post.then(() => {
-      // inputを空に
     })
   };
+
+  const date = new Date();
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Tokyo"
+  };
+  const formattedDate = date.toLocaleString("ja-JP", options);
 
   /**
    * 変更イベントで呼び出される関数
@@ -108,6 +111,10 @@ export const SingleContent = ({ setTodo, filterOption }: props) => {
     const postData: any = {
       id: uuidv4(),
       title: e.target.elements["title"].value,
+      details: '',
+      start: formattedDate,
+      priority: '',
+      share: true,
     }
     postAddTask(postData);
   }
@@ -116,52 +123,73 @@ export const SingleContent = ({ setTodo, filterOption }: props) => {
       <Box
         flex={"1"}
         h="100vh"
-        pl={12} className='Mainbar'>
+        pl={2}
+        className='Mainbar'>
         <form onSubmit={onAddFormSubmit}>
-          <Flex
-            color="#ffffff"
-            fontWeight='semibold'
-            fontSize='large'
-          >全て
-          </Flex>
-
-          <label htmlFor="todo"></label>
           <Input
             name="title"
             placeholder='+ Enterキーを押して保存します。'
             onChange={handleAddFormChanges}
-            autoFocus
           />
         </form>
-
-        {/* ポスト */}
-        <Stack direction='row' p={2}>
-        </Stack>
-
         {filterOption === "All" ? (
+          <Stack >
+            {posts && posts.map((post) => (
+              <Box key={post.title}>
+                <HStack>
+                  <Button
+                    colorScheme={colors[post.priority]}
+                    onClick={() => {
+                      setTodo(post)
+                      console.log('single')
+                      router.push({
+                        pathname: `/Tasks/All/${post.id}`,
+                        query: post
+                      })
+                    }}>
+                    <a>{post.title}</a>
+                  </Button>
+                  <Box>
+                    {post.start ? new Date(post.start).toLocaleDateString() : ""}
+                  </Box>
+                  <Spacer />
+                  <Link href='../All' passHref>
+                    <Box>
+                      <IconButton
+                        variant='outline'
+                        colorScheme='teal'
+                        aria-label='DeleteIcon'
+                        border="0"
+                        onClick={() => handleDeletePost(post)}
+                        icon={<DeleteIcon />}
+                      />
+                    </Box>
+                  </Link>
+                </HStack >
+              </Box>
+            ))}
+          </Stack>
+        ) : (
           <Stack>
-            {posts && posts.map((post: any) => (
-              <Flex
-                key={post.title}
-              // borderRadius="lg"
-              // bg={'cyan.400'}
-              >
+            {posts && posts.map((post) => (
+              <Box key={post.title}>
                 <HStack>
-                  <Box key={post.title}>
-                    <Button colorScheme={colors[post.priority]} onClick={() => {
+                  <Button
+                    colorScheme={colors[post.priority]}
+                    onClick={() => {
                       setTodo(post)
-                      router.push(`/Tasks/All/${post.id}`)
+                      router.push({
+                        pathname: `/Tasks/All/${post.id}`,
+                        query: post
+                      })
                     }}>
-                      <a>{post.title}</a>
-                    </Button>
-                  </Box>
-
-                  <Box color={"blue.400"}>
+                    <a>{post.title}</a>
+                  </Button>
+                  <Spacer />
+                  <Box>
                     {post.start ? new Date(post.start).toLocaleDateString() : ""}
                   </Box>
-
                   <Spacer />
-
                   <Link href='../All' passHref>
                     <Box>
                       <IconButton
@@ -175,55 +203,16 @@ export const SingleContent = ({ setTodo, filterOption }: props) => {
                     </Box>
                   </Link>
                 </HStack >
-              </Flex>
+              </Box>
             ))}
-          </Stack >) : (<Stack>
-            {posts && posts.map((post: any) => (
-              <Flex
-                key={post.title}
-              // borderRadius="lg"
-              // bg={'cyan.400'}
-              >
-                <HStack>
-                  <Box key={post.title}>
-                    <Button colorScheme={colors[post.priority]} onClick={() => {
-                      setTodo(post)
-                      router.push(`/Tasks/All/${post.id}`)
-                    }}>
-                      <a>{post.title}</a>
-                    </Button>
-                  </Box>
-
-                  <Box color={"blue.400"}>
-                    {post.start ? new Date(post.start).toLocaleDateString() : ""}
-                  </Box>
-
-                  <Spacer />
-
-                  <Link href='../All' passHref>
-                    <Box>
-                      <IconButton
-                        variant='outline'
-                        colorScheme='teal'
-                        aria-label='DeleteIcon'
-                        border="0"
-                        onClick={() => handleDeletePost(post)}
-                        icon={<DeleteIcon />}
-                      />
-                    </Box>
-                  </Link>
-                </HStack >
-              </Flex>
-            ))}
-          </Stack >)
-        }
+          </Stack>
+        )}
       </Box >
       <Box
         bg={useColorModeValue('white', 'gray.900')}
         borderRight="1px"
         borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-        w={{ base: 'full', md: 12 }
-        }
+        w={{ base: 'full', md: 2 }}
         h="100vh"
       ></Box>
     </>

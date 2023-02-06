@@ -24,7 +24,7 @@ export const MainBar = ({ filter, setFilter, filterOption, setFilterOption }: an
         // MainItems:2層のリストが詰まっている
         MainItems.map((link: any) => (
           // NavItem:1層と2層のコンポーネント
-          <NavItem key={link.name} icon={link.icon} mt={1} filter={filter} name={link.name}>
+          <NavItem key={link.name} icon={link.icon} filter={filter} name={link.name}>
             <Button
               onClick={() => setFilter(link.name)}>
               {link.name}:{daysFilterTaskList[link.name]}
