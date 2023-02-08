@@ -16,8 +16,8 @@ export const NavItem = ({ icon, name, children, ...rest }: NavItemProps) => {
       }>
       <Flex
         align="center"
-        p="3"
-        mx="2"
+        p="2"
+        mx="1"
         borderRadius="lg"
         role="group"
         cursor="pointer"

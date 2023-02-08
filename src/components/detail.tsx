@@ -1,11 +1,9 @@
 import { Box, Textarea, Input, Flex } from '@chakra-ui/react';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from "next/router";
-import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { postsState, userItemState } from '../atoms/atom';
 import db from '../lib/firebase';
-import { ITodoData } from '../interfaces/todo';
 import { PriorityButton } from './PriorityButton';
 
 // (pages/task/All/[id]/index.tsx)からpropsでstateとstateの更新関数を使う形
@@ -47,7 +45,9 @@ export const Detail = ({ todo, setTodo }: props) => {
   };
 
   return (
-    <Box flex="1.6">
+    <Box
+      flex="1.6"
+    >
       {todo && (
         <Box p={2}>
           <form onBlur={postUpdateTask}>
@@ -60,7 +60,7 @@ export const Detail = ({ todo, setTodo }: props) => {
             }}
             >Google Calendarに共有
           </Checkbox> */}
-            <Flex align="center">
+            <Flex align="center" pb={2}>
               <PriorityButton todo={todo} setTodo={setTodo} />
               <Input
                 name="start"
@@ -71,14 +71,16 @@ export const Detail = ({ todo, setTodo }: props) => {
               />
             </Flex>
             <Input
+              mb={2}
               name="title"
               placeholder="title"
               value={todo.title}
               onChange={(e) => setTodo({ ...todo, title: e.target.value })}
             />
             <Textarea
+
               name="detail"
-              height="70vh"
+              height="80vh"
               value={todo.detail}
               placeholder="detail"
               onChange={(e) => setTodo({ ...todo, detail: e.target.value })}

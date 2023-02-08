@@ -7,8 +7,7 @@ type Props = {
 };
 
 export const PriorityButton = ({ todo, setTodo }: Props) => (
-  <Flex justifyContent="center" mt={4} align="center" >
-    {todo.priority}
+  <Flex justifyContent="center" pr={2} align="center" >
     <Popover placement="bottom" isLazy>
       <PopoverTrigger>
         <IconButton aria-label="More server options" icon={<UpDownIcon />} variant="solid" w="fit-content" />
