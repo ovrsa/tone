@@ -83,36 +83,34 @@ export const SingleContent = ({ setTodo, filterOption }: props) => {
    * @param postData
    */
   const postAddTask = async (postData: ITodoData) => {
-    const post = setDoc(doc(db, "users", userItem.uid, "posts", postData.id), postData);
-    post.then(() => {
-    })
+    setDoc(doc(db, "users", userItem.uid, "posts", postData.id), postData);
   };
 
-  const date = new Date();
-  const options = {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Asia/Tokyo"
-  };
-  const formattedDate = date.toLocaleString("ja-JP", options);
+  // dateをカレンダーで表示できる形にフォーマットする
+  const makeStringDate = (): string => {
+    const date = new Date();
+    const year = date.getFullYear()
+    const month = ('00' + (date.getMonth() + 1)).slice(-2)
+    const day = ('00' + date.getDate()).slice(-2)
+    const hour = ('00' + date.getHours()).slice(-2)
+    const minutes = ('00' + date.getMinutes()).slice(-2)
+
+    return `${year}-${month}-${day}T${hour}:${minutes}`
+  }
+  console.log(makeStringDate())
 
   /**
    * 変更イベントで呼び出される関数
    * @param e HTMLイベント
    */
   const onAddFormSubmit = (e: any) => {
-    // 本来のSubmitの機能を停止
     e.preventDefault();
 
-    // const postData: ITodoData = {
     const postData: any = {
       id: uuidv4(),
       title: e.target.elements["title"].value,
       details: '',
-      start: formattedDate,
+      start: makeStringDate(), // ここに追加
       priority: '',
       share: true,
     }
@@ -121,12 +119,14 @@ export const SingleContent = ({ setTodo, filterOption }: props) => {
   return (
     <>
       <Box
-        flex={"1"}
+        w={{ base: 'full', md: "35%" }}
         h="100vh"
         pl={2}
         className='Mainbar'>
         <form onSubmit={onAddFormSubmit}>
           <Input
+            mt={2}
+            mb={2}
             name="title"
             placeholder='+ Enterキーを押して保存します。'
             onChange={handleAddFormChanges}
@@ -135,7 +135,7 @@ export const SingleContent = ({ setTodo, filterOption }: props) => {
         {filterOption === "All" ? (
           <Stack >
             {posts && posts.map((post) => (
-              <Box key={post.title}>
+              <Box key={post.title} >
                 <HStack>
                   <Button
                     colorScheme={colors[post.priority]}
