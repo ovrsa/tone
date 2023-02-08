@@ -11,11 +11,10 @@ export const MainBar = ({ filter, setFilter, filterOption, setFilterOption }: an
   const daysFilterTaskList = useRecoilValue(filteredPostsLengthState)
   return (
     <Box
-      flex={"1"}
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: 60 }}
+      w={{ base: 'full', md: "20%" }}
       h="100vh"
     >
       {/* {filter === "All" && <PriorityFilter filterOption={filterOption} setFilterOption={setFilterOption} />} */}

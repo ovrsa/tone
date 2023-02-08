@@ -46,7 +46,7 @@ export default function SinglePage() {
 
       <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
 
-      <Flex ml={{ base: 0, md: 60 }} p="0" h="100vh">
+      <Flex ml={{ base: 'full', md: '12.5%' }}>
         <MainBar
           filterOption={filterOption}
           setFilterOption={setFilterOption}
