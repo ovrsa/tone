@@ -21,7 +21,7 @@ import { provider } from '@lib/firebase';
 import { FcGoogle } from 'react-icons/fc';
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from '../lib/firebase';
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
 import React from "react";
 import db from "../lib/firebase";
 import { useRouter } from 'next/router';
@@ -31,11 +31,11 @@ import usePasswordValidation from '../hooks/usePasswordValidation';
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLogin, setIsLogin] = useRecoilState(isLoginState)
-  const [uid, setUid] = useRecoilState(userItemState)
+  const [_isLogin, _setIsLogin] = useRecoilState(isLoginState)
+  const [_uid, _setUid] = useRecoilState(userItemState)
   const [userItem, setUserItem] = useRecoilState(userItemState);
 
-  const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
+  const [isSignUpSuccess, _setIsSignUpSuccess] = useState(false);
   const router = useRouter()
   const { errorMessage, checkPassword } = usePasswordValidation();
 
@@ -71,13 +71,13 @@ const SignUp = () => {
     setPassword(event.currentTarget.value);
   };
 
-  const [user] = useAuthState(auth);
+  const [_user] = useAuthState(auth);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignInWithGoogle = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        const user = result.user;
+        const _user = result.user;
         onAuthStateChanged(auth, (user) => {
           if (user) {
             const { email, uid } = user as User;
@@ -98,7 +98,7 @@ const SignUp = () => {
     const password = 'Test1234';
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
+        const _user = userCredential.user;
         // ユーザー情報取得処理しuserItemへ格納
         onAuthStateChanged(auth, (user) => {
           if (user) {
