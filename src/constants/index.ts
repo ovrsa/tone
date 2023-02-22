@@ -1,4 +1,4 @@
-import { AddIcon, ArrowRightIcon, CalendarIcon, CheckCircleIcon, CheckIcon, SettingsIcon, TimeIcon } from "@chakra-ui/icons";
+import { AddIcon, ArrowRightIcon, CalendarIcon, CheckCircleIcon, CheckIcon, TimeIcon } from "@chakra-ui/icons";
 
 // LinkItemの型
 export interface LinkItemProps {

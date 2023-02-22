@@ -1,7 +1,7 @@
 import { Button, Flex, Heading, Image, Stack, Text, useBreakpointValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
-export default function SplitScreen() {
+const SplitScreen = () => {
   const router = useRouter();
 
   const handleSignUpClick = () => {
@@ -70,3 +70,5 @@ export default function SplitScreen() {
     </Stack>
   );
 }
+
+export default SplitScreen

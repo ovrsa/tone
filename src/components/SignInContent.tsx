@@ -61,7 +61,7 @@ export default function Signin() {
   const handleSignInWithGoogle = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        const user = result.user;
+        const _user = result.user;
         onAuthStateChanged(auth, (user) => {
           if (user) {
             const { email, uid } = user as User;
@@ -87,7 +87,7 @@ export default function Signin() {
     const password = 'Test1234';
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
+        const _user = userCredential.user;
         // ユーザー情報取得処理しuserItemへ格納
         onAuthStateChanged(auth, (user) => {
           if (user) {
