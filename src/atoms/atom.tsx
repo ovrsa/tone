@@ -18,7 +18,6 @@ export const postsState = atom({
       detail: "",
       title: "",
       start: "",
-      share: "",
       priority: "",
     }
   ],

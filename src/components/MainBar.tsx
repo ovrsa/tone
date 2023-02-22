@@ -1,36 +1,47 @@
+// useRecoilValueを使い、filteredPostsLengthStateを取得
+// MainBar:2層目を成すコンポーネント
+// filter: 現在のフィルター状態
+// setFilter: フィルター状態の変更関数
+// filterOption: 現在のフィルターオプション
+// setFilterOption: フィルターオプションの変更関数
 import { filteredPostsLengthState } from "@atoms/atom"
-import { useColorModeValue, Button, Box } from "@chakra-ui/react"
+import { Box, Spacer } from "@chakra-ui/react"
 import { MainItems } from "@constants"
 import { useRecoilValue } from "recoil"
 import { NavItem } from "./NavItem"
 import { PriorityFilter } from "./PriorityFilter"
 
-// MainBar:2層目を成すコンポーネント
 export const MainBar = ({ filter, setFilter, filterOption, setFilterOption }: any) => {
-  // daysFilter:recoilで管理、AllContentで配列定義
   const daysFilterTaskList = useRecoilValue(filteredPostsLengthState)
   return (
-    <Box
-      bg={useColorModeValue('white', 'gray.900')}
-      borderRight="1px"
-      borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: "20%" }}
-      h="100vh"
-    >
-      {/* {filter === "All" && <PriorityFilter filterOption={filterOption} setFilterOption={setFilterOption} />} */}
-      <PriorityFilter filterOption={filterOption} setFilterOption={setFilterOption} />
+    <Box>
+      <PriorityFilter
+        filterOption={filterOption}
+        setFilterOption={setFilterOption}
+      />
       {
-        // MainItems:2層のリストが詰まっている
+        // リンクのリストをmap関数で作成し、NavItemコンポーネントを返す
         MainItems.map((link: any) => (
-          // NavItem:1層と2層のコンポーネント
-          <NavItem key={link.name} icon={link.icon} filter={filter} name={link.name}>
-            <Button
-              onClick={() => setFilter(link.name)}>
-              {link.name}:{daysFilterTaskList[link.name]}
-            </Button>
+          <NavItem
+            key={link.name}
+            icon={link.icon}
+            filter={filter}
+            name={link.name}
+            onClick={() => setFilter(link.name)}
+          >
+            {/* リンク名を表示 */}
+            <Box>
+              {link.name}
+            </Box>
+            <Spacer />
+
+            {/* リンクのタスク数を表示 */}
+            <Box fontSize="sm">
+              {daysFilterTaskList[link.name]}
+            </Box>
           </NavItem>
         ))
       }
-    </Box >
+    </Box>
   )
 }
