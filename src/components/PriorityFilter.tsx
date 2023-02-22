@@ -1,13 +1,17 @@
-import { Box, Select } from '@chakra-ui/react'
+import { Box, Select, SelectChangeEvent } from '@chakra-ui/react';
 
-export const PriorityFilter = ({ filterOption, setFilterOption }: any) => {
+interface PriorityFilterProps {
+  filterOption: string;
+  setFilterOption: React.Dispatch<React.SetStateAction<string>>;
+}
 
-  const handleNewTask = (event: any) => {
-    setFilterOption(event.target.value)
-  }
+export const PriorityFilter = ({ filterOption, setFilterOption }: PriorityFilterProps) => {
+  const handleNewTask = (event: SelectChangeEvent) => {
+    setFilterOption(event.target.value);
+  };
 
   return (
-    <Box mt={2} mr={2} mb={2}>
+    <Box m={2}>
       <Select value={filterOption} placeholder='Priority' onChange={handleNewTask}>
         <option value='All'>All</option>
         <option value='High'>High</option>
@@ -15,5 +19,5 @@ export const PriorityFilter = ({ filterOption, setFilterOption }: any) => {
         <option value='Low'>Low</option>
       </Select>
     </Box>
-  )
-}
+  );
+};
