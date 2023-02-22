@@ -1,65 +1,47 @@
 import { Box, Textarea, Input, Flex } from '@chakra-ui/react';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from "next/router";
+import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { postsState, userItemState } from '../atoms/atom';
+import { userItemState } from '../atoms/atom';
 import db from '../lib/firebase';
 import { PriorityButton } from './PriorityButton';
+import { ITodoData } from '../interfaces/todo';
 
-// (pages/task/All/[id]/index.tsx)からpropsでstateとstateの更新関数を使う形
-type props = {
-  todo: any;
-  setTodo: any
+type Props = {
+  todo: ITodoData;
+  setTodo: React.Dispatch<React.SetStateAction<ITodoData>>;
 }
 
-// Detail:4層目を成すコンポーネント
-export const Detail = ({ todo, setTodo }: props) => {
+export const Detail: React.VFC<Props> = ({ todo, setTodo }) => {
   const { query, isReady } = useRouter();
   const [userItem] = useRecoilState(userItemState);
-  const [posts] = useRecoilState(postsState)
 
-  // useEffect(() => {
-  //   if () {
-  //     setTodo({
-  //       id: query.id,
-  //       priority: query.priority,
-  //       share: query.share,
-  //       start: query.start,
-  //       detail: query.detail,
-  //       title: query.title
-  //     })
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (isReady) {
+      setTodo({
+        id: query.id as string,
+        priority: query.priority as 'High' | 'Middle' | 'Low' | '',
+        start: query.start as string,
+        detail: query.detail as string,
+        title: query.title as string
+      });
+    }
+  }, [isReady]);
 
-  /**
-   * @param e
-   */
-
-  const postUpdateTask = async (e) => {
+  const postUpdateTask = async (e: React.FocusEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { id, title, detail, start, share, priority } = todo;
-    const post = setDoc(doc(db, "users", userItem.uid, "posts", todo.id),
-      { id, title, detail, start, share, priority });
-    console.log(post);
+    const { id, title, detail, start, priority } = todo;
+    await setDoc(doc(db, "users", userItem.uid, "posts", todo.id),
+      { id, title, detail, start, priority });
   };
 
   return (
-    <Box
-      flex="1.6"
-    >
+    <Box>
       {todo && (
-        <Box p={2}>
+        <Box>
           <form onBlur={postUpdateTask}>
-            {/* <Checkbox
-            name="share"
-            value={todo.share}
-            size="md"
-            onChange={(e) => {
-              setTodo({ ...todo, share: e.target.value })
-            }}
-            >Google Calendarに共有
-          </Checkbox> */}
             <Flex align="center" pb={2}>
               <PriorityButton todo={todo} setTodo={setTodo} />
               <Input
@@ -78,7 +60,6 @@ export const Detail = ({ todo, setTodo }: props) => {
               onChange={(e) => setTodo({ ...todo, title: e.target.value })}
             />
             <Textarea
-
               name="detail"
               height="80vh"
               value={todo.detail}
