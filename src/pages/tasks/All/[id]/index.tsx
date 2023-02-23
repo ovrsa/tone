@@ -7,20 +7,22 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { AllContent } from '@components/AllContent'
-import { Detail } from '@components/Detail'
+import { Detail } from '@components/detail'
 import { useState } from 'react'
 import { MainBar } from '@components/MainBar'
 import { MobileNav } from '@components/MobileNav'
 import { SidebarContent } from '@components/SidebarContent'
+import UserIcon from '@components/UserIcon'
 import Logout from '@components/Logout'
 
 // SinglePage:タスク選択時の画面
-export default function SinglePage() {
+const SinglePage = () => {
   // useDisclosure: chakra-uiのカスタムフック、開く、閉じるの支援
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [currentTodo, setCurrentTodo] = useState<any>('')
   const [filter, setFilter] = useState("All")
   const [filterOption, setFilterOption] = useState("All");
+
 
   return (
     <Flex>
@@ -39,8 +41,15 @@ export default function SinglePage() {
           filter={filter}
           onClose={onClose}
         />
-        <Logout />
+        <Flex
+          ml={5}
+          mb={5}
+        >
+          <UserIcon />
+          <Logout />
+        </Flex>
       </Box>
+
 
       <Box
         flexBasis="18%"
@@ -109,3 +118,4 @@ export default function SinglePage() {
   )
 }
 
+export default SinglePage

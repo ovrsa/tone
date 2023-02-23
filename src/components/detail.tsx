@@ -39,7 +39,7 @@ export const Detail: React.VFC<Props> = ({ todo, setTodo }) => {
 
   return (
     <Box>
-      {todo && (
+      {todo !== "" && (
         <Box>
           <form onBlur={postUpdateTask}>
             <Flex align="center" pb={2}>

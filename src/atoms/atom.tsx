@@ -13,7 +13,6 @@ export const postsState = atom({
   key: "posts",
   default: [
     {
-      create: "",
       id: "",
       detail: "",
       title: "",
@@ -28,7 +27,7 @@ export const postsState = atom({
 export const isLoginState = atom({
   key: 'isLoginState',
   default: false,
-  effects_UNSTABLE: [persistAtom]
+  effects_UNSTABLE: [persistAtom] 
 });
 
 // userItem:user情報

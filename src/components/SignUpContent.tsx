@@ -21,7 +21,7 @@ import { provider } from '@lib/firebase';
 import { FcGoogle } from 'react-icons/fc';
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from '../lib/firebase';
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
 import React from "react";
 import db from "../lib/firebase";
 import { useRouter } from 'next/router';
@@ -31,53 +31,68 @@ import usePasswordValidation from '../hooks/usePasswordValidation';
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLogin, setIsLogin] = useRecoilState(isLoginState)
-  const [uid, setUid] = useRecoilState(userItemState)
+  const [_isLogin, _setIsLogin] = useRecoilState(isLoginState)
+  const [_uid, _setUid] = useRecoilState(userItemState)
   const [userItem, setUserItem] = useRecoilState(userItemState);
 
-  const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
+  const [isSignUpSuccess, _setIsSignUpSuccess] = useState(false);
   const router = useRouter()
   const { errorMessage, checkPassword } = usePasswordValidation();
 
   const handleSubmit = async (event: any) => {
-    event.preventDefault();
-    if (!checkPassword(password)) {
+    // checkPassword フックでパスワードの整合性をチェック、問題があればエラーを表示
+    try {
+      event.preventDefault();
+      checkPassword(password);
+    } catch (error) {
+      console.log(error);
+
       return;
     }
 
     try {
+      // Firebase Authentication で新しいユーザーアカウントを作成
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       const userDocRef = doc(db, "users", user.uid);
+      // createUserWithEmailAndPassword が成功した場合は、Firebaseの setDoc 関数を使用して、Firestore にユーザー情報を保存
+
       await setDoc(userDocRef, {
         uid: user.uid,
         timeStamp: serverTimestamp(),
         email: user.email
       });
-
-      setUserItem({ uid: user.uid, email: user.email });
+      // Recoilのステート管理機能を使用して、アプリ全体でログイン状態を管理するために isLogin ステートと uid ステートを更新
+      // 最後に、router.push 関数を使用して、ユーザーをタスク一覧ページにリダイレクト
+      setUserItem({ uid: user.uid, email: user.email || "" });
       router.push('../Tasks/All');
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleChangeEmail = (event) => {
+  // input要素の入力値が変更されたときに、その入力値を取得して、emailステートを更新する
+  // 引数にイベントオブジェクトを取り、event.currentTarget.valueを使用して、input要素の現在の値を取得
+  // そして、その値をsetEmail関数を使用してemailステートに更新している
+  // handleChangeEmail関数は、input要素のonChangeプロパティに指定されているため、ユーザーがinput要素の値を変更するたびに、この関数が呼び出される
+  const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.currentTarget.value);
   };
 
-  const handleChangePassword = (event) => {
+  // 同上
+  const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.currentTarget.value);
   };
 
-  const [user] = useAuthState(auth);
+  const [_user] = useAuthState(auth);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignInWithGoogle = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        const user = result.user;
+        const _user = result.user;
         onAuthStateChanged(auth, (user) => {
           if (user) {
             const { email, uid } = user as User;
@@ -98,7 +113,7 @@ const SignUp = () => {
     const password = 'Test1234';
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
+        const _user = userCredential.user;
         // ユーザー情報取得処理しuserItemへ格納
         onAuthStateChanged(auth, (user) => {
           if (user) {

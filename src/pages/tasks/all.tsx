@@ -15,7 +15,7 @@ import Unselected from '@components/Unselected';
 import Logout from '@components/Logout';
 import UserIcon from '@components/UserIcon';
 
-export default function AllPage() {
+const AllPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [_currentTodo, setCurrentTodo] = useState<any>('')
   const [filter, setFilter] = useState("All")
@@ -118,3 +118,4 @@ export default function AllPage() {
   );
 }
 
+export default AllPage
