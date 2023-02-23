@@ -78,6 +78,7 @@ const SignUp = () => {
     setEmail(event.currentTarget.value);
   };
 
+  // 同上
   const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.currentTarget.value);
   };
