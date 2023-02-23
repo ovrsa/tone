@@ -39,10 +39,19 @@ export const Detail: React.VFC<Props> = ({ todo, setTodo }) => {
 
   return (
     <Box>
-      <Box>
-        <form onBlur={postUpdateTask}>
-          <Flex align="center" pb={2}>
-            <PriorityButton todo={todo} setTodo={setTodo} />
+      {todo !== "" && (
+        <Box>
+          <form onBlur={postUpdateTask}>
+            <Flex align="center" pb={2}>
+              <PriorityButton todo={todo} setTodo={setTodo} />
+              <Input
+                name="start"
+                value={todo.start}
+                size="md"
+                type="datetime-local"
+                onChange={(e) => setTodo({ ...todo, start: e.target.value })}
+              />
+            </Flex>
             <Input
               name="start"
               value={todo.start}
