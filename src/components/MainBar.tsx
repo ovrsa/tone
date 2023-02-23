@@ -7,12 +7,19 @@
 import { filteredPostsLengthState } from "@atoms/atom"
 import { Box, Spacer } from "@chakra-ui/react"
 import { MainItems } from "@constants"
+import { useState, useEffect } from "react"
 import { useRecoilValue } from "recoil"
 import { NavItem } from "./NavItem"
 import { PriorityFilter } from "./PriorityFilter"
 
 export const MainBar = ({ filter, setFilter, filterOption, setFilterOption }: any) => {
-  const daysFilterTaskList = useRecoilValue(filteredPostsLengthState)
+  const [daysFilterTaskList, setDaysFilterTaskList] = useState<any>([])
+  const daysFilterTaskListData = useRecoilValue(filteredPostsLengthState)
+
+  useEffect(() => {
+    if (!daysFilterTaskListData) return
+    setDaysFilterTaskList(daysFilterTaskListData)
+  }, [daysFilterTaskListData])
   return (
     <Box>
       <PriorityFilter

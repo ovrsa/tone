@@ -110,6 +110,7 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
       orderBy("start")
     );
     const unSub = onSnapshot(q, (querySnapshot) => {
+
       setPosts(
         querySnapshot.docs.map((post) => ({
           id: post.data().id,
@@ -237,7 +238,7 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
                     setTodo(post)
                     router.push({
                       pathname: `/Tasks/All/${post.id}`,
-                      query: post
+                      query: JSON.stringify(post),
                       // search: `?${query}`,
                     });
                   }}
@@ -295,7 +296,9 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
                     setTodo(post)
                     router.push({
                       pathname: `/Tasks/All/${post.id}`,
-                      query: post
+                      query: JSON.stringify(post),
+                      // query: post
+                      // 上記の書き方でないと1度のクリックで開けない
                     })
                   }}
                   borderRadius="lg"
