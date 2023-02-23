@@ -7,7 +7,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { AllContent } from '@components/AllContent'
-import { Detail } from '@components/Detail'
+import { Detail } from '@components/detail'
 import { useState } from 'react'
 import { MainBar } from '@components/MainBar'
 import { MobileNav } from '@components/MobileNav'
