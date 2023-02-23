@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Flex, Text } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import { userItemState } from '../atoms/atom';
 
-const UserIcon = () => {
-  const userItem = useRecoilValue(userItemState);
 
-  const emailInitial = userItem.email ? userItem.email[0].toUpperCase() : '';
+const UserIcon = () => {
+
+  const [emailInitial, setEmailInitial] = useState<string>('');
+  const userItem = useRecoilValue(userItemState);
   const iconSize = '40px';
   const iconBgColor = 'blue.500';
   const iconTextColor = 'white';
+
+  useEffect(() => {
+    if (userItem) {
+      const initialEmail = userItem.email[0].toUpperCase();
+      setEmailInitial(initialEmail);
+    }
+  }, [userItem]);
 
   return (
     <Flex

@@ -39,36 +39,34 @@ export const Detail: React.VFC<Props> = ({ todo, setTodo }) => {
 
   return (
     <Box>
-      {todo !== "" && (
-        <Box>
-          <form onBlur={postUpdateTask}>
-            <Flex align="center" pb={2}>
-              <PriorityButton todo={todo} setTodo={setTodo} />
-              <Input
-                name="start"
-                value={todo.start}
-                size="md"
-                type="datetime-local"
-                onChange={(e) => setTodo({ ...todo, start: e.target.value })}
-              />
-            </Flex>
+      <Box>
+        <form onBlur={postUpdateTask}>
+          <Flex align="center" pb={2}>
+            <PriorityButton todo={todo} setTodo={setTodo} />
             <Input
-              mb={2}
-              name="title"
-              placeholder="title"
-              value={todo.title}
-              onChange={(e) => setTodo({ ...todo, title: e.target.value })}
+              name="start"
+              value={todo.start}
+              size="md"
+              type="datetime-local"
+              onChange={(e) => setTodo({ ...todo, start: e.target.value })}
             />
-            <Textarea
-              name="detail"
-              height="80vh"
-              value={todo.detail}
-              placeholder="detail"
-              onChange={(e) => setTodo({ ...todo, detail: e.target.value })}
-            />
-          </form>
-        </Box>
-      )}
+          </Flex>
+          <Input
+            mb={2}
+            name="title"
+            placeholder="title"
+            value={todo.title}
+            onChange={(e) => setTodo({ ...todo, title: e.target.value })}
+          />
+          <Textarea
+            name="detail"
+            height="80vh"
+            value={todo.detail}
+            placeholder="detail"
+            onChange={(e) => setTodo({ ...todo, detail: e.target.value })}
+          />
+        </form>
+      </Box>
     </Box>
   );
 }
