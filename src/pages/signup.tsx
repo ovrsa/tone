@@ -2,10 +2,11 @@ import SignUpContent from '@components/SignUpContent'
 import { auth } from '@lib/firebase';
 import React from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { AuthProvider } from '../context/AuthContext';
+// import { AuthProvider } from '../context/AuthContext';
 
 const Signup = () => {
-  const [user] = useAuthState(auth);
+  const [_user] = useAuthState(auth);
+
 
   return (
     <>
