@@ -123,7 +123,8 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
       )
     })
     return () => unSub()
-  }, [])
+  }, [userItem.uid, setPosts, setFilteredPostsLength])
+
 
 
   // useEffectフックを使って、posts配列の要素をfilterの値に基づいてフィルタリングし、setFilteredPostsで新しい配列をセットしている
@@ -349,7 +350,7 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
           </Stack >
         )
         }
-        </Box >
+      </Box >
     </>
   );
 }

@@ -23,7 +23,6 @@ const SinglePage = () => {
   const [filter, setFilter] = useState("All")
   const [filterOption, setFilterOption] = useState("All");
 
-
   return (
     <Flex>
       <Box
@@ -49,7 +48,6 @@ const SinglePage = () => {
           <Logout />
         </Flex>
       </Box>
-
 
       <Box
         flexBasis="18%"
@@ -88,7 +86,6 @@ const SinglePage = () => {
           setTodo={setCurrentTodo}
         />
       </Box>
-
 
       <Box
         w={{ base: 'full', md: '35%' }}
