@@ -46,16 +46,19 @@ const SignUp = () => {
       checkPassword(password);
     } catch (error) {
       console.log(error);
+
       return;
     }
 
     try {
       // Firebase Authentication で新しいユーザーアカウントを作成
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       const userDocRef = doc(db, "users", user.uid);
       // createUserWithEmailAndPassword が成功した場合は、Firebaseの setDoc 関数を使用して、Firestore にユーザー情報を保存
+
       await setDoc(userDocRef, {
         uid: user.uid,
         timeStamp: serverTimestamp(),

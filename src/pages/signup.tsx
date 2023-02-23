@@ -7,6 +7,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 const Signup = () => {
   const [_user] = useAuthState(auth);
 
+
   return (
     <>
       {/* ログイン状態を反映させるためにAuthProviderでSignUpコンポーネントを囲う必要がある */}
