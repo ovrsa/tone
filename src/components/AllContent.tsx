@@ -349,7 +349,7 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
           </Stack >
         )
         }
-        </Box >
+      </Box >
     </>
   );
 }
