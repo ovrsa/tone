@@ -123,7 +123,7 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
       )
     })
     return () => unSub()
-  }, [postsState, userItemState])
+  }, [])
 
 
   // useEffectフックを使って、posts配列の要素をfilterの値に基づいてフィルタリングし、setFilteredPostsで新しい配列をセットしている
