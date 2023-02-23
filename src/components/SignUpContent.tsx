@@ -40,34 +40,45 @@ const SignUp = () => {
   const { errorMessage, checkPassword } = usePasswordValidation();
 
   const handleSubmit = async (event: any) => {
-    event.preventDefault();
-    if (!checkPassword(password)) {
+    // checkPassword フックでパスワードの整合性をチェック、問題があればエラーを表示
+    try {
+      event.preventDefault();
+      checkPassword(password);
+    } catch (error) {
+      console.log(error);
       return;
     }
 
     try {
+      // Firebase Authentication で新しいユーザーアカウントを作成
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       const userDocRef = doc(db, "users", user.uid);
+      // createUserWithEmailAndPassword が成功した場合は、Firebaseの setDoc 関数を使用して、Firestore にユーザー情報を保存
       await setDoc(userDocRef, {
         uid: user.uid,
         timeStamp: serverTimestamp(),
         email: user.email
       });
-
-      setUserItem({ uid: user.uid, email: user.email });
+      // Recoilのステート管理機能を使用して、アプリ全体でログイン状態を管理するために isLogin ステートと uid ステートを更新
+      // 最後に、router.push 関数を使用して、ユーザーをタスク一覧ページにリダイレクト
+      setUserItem({ uid: user.uid, email: user.email || "" });
       router.push('../Tasks/All');
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleChangeEmail = (event) => {
+  // input要素の入力値が変更されたときに、その入力値を取得して、emailステートを更新する
+  // 引数にイベントオブジェクトを取り、event.currentTarget.valueを使用して、input要素の現在の値を取得
+  // そして、その値をsetEmail関数を使用してemailステートに更新している
+  // handleChangeEmail関数は、input要素のonChangeプロパティに指定されているため、ユーザーがinput要素の値を変更するたびに、この関数が呼び出される
+  const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.currentTarget.value);
   };
 
-  const handleChangePassword = (event) => {
+  const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.currentTarget.value);
   };
 

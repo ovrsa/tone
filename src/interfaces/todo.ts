@@ -2,6 +2,6 @@ export interface ITodoData {
   id: string;
   title: string;
   detail: string;
-  start: String;
+  start: string;
   priority: string;
 }
