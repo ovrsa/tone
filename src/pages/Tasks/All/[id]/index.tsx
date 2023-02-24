@@ -7,7 +7,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { AllContent } from '@components/AllContent'
-import { Detail } from '@components/detail'
+import { Detail } from '@components/Detail'
 import { useState } from 'react'
 import { MainBar } from '@components/MainBar'
 import { MobileNav } from '@components/MobileNav'
@@ -22,7 +22,6 @@ const SinglePage = () => {
   const [currentTodo, setCurrentTodo] = useState<any>('')
   const [filter, setFilter] = useState("All")
   const [filterOption, setFilterOption] = useState("All");
-
 
   return (
     <Flex>
@@ -49,7 +48,6 @@ const SinglePage = () => {
           <Logout />
         </Flex>
       </Box>
-
 
       <Box
         flexBasis="18%"
@@ -88,7 +86,6 @@ const SinglePage = () => {
           setTodo={setCurrentTodo}
         />
       </Box>
-
 
       <Box
         w={{ base: 'full', md: '35%' }}
