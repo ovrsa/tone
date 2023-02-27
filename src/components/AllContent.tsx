@@ -125,8 +125,6 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
     return () => unSub()
   }, [userItem.uid, setPosts, setFilteredPostsLength])
 
-
-
   // useEffectフックを使って、posts配列の要素をfilterの値に基づいてフィルタリングし、setFilteredPostsで新しい配列をセットしている
   // nowは現在の日時を表し、todayは今日の日付、yesterdayは昨日の日付、next7Daysは今日から7日後の日付を表す
   // switch文を使って、filterの値に基づいてフィルタリング方法を変更している
