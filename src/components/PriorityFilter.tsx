@@ -1,4 +1,4 @@
-import { Box, Select, SelectChangeEvent } from '@chakra-ui/react';
+import { Box, Select } from '@chakra-ui/react';
 
 interface PriorityFilterProps {
   filterOption: string;
@@ -6,7 +6,7 @@ interface PriorityFilterProps {
 }
 
 export const PriorityFilter = ({ filterOption, setFilterOption }: PriorityFilterProps) => {
-  const handleNewTask = (event: SelectChangeEvent) => {
+  const handleNewTask = (event: any) => {
     setFilterOption(event.target.value);
   };
 
