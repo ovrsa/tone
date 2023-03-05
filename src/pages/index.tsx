@@ -62,9 +62,7 @@ const SplitScreen = () => {
         <Image
           alt={'Login Image'}
           objectFit={'cover'}
-          src={
-            '/images/sample.jpg'
-          }
+          src={'/images/Sample.jpg'}
         />
       </Flex>
     </Stack>

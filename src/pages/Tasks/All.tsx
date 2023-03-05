@@ -88,7 +88,8 @@ const AllPage = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        minH="100vh"
+          minH="100vh"
+
       >
         <Unselected />
       </Box>

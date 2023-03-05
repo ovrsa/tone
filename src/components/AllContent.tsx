@@ -229,7 +229,7 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
 
         {filterOption === "All" ? (
           <Stack>
-            {filteredPosts && filteredPosts.map((post) => (
+            {filteredPosts && filteredPosts.map((post: any) => (
               <>
                 <HStack
                   cursor="pointer"
@@ -237,10 +237,10 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
                     setTodo(post)
                     router.push({
                       pathname: `/Tasks/All/${post.id}`,
-
-                      query: JSON.stringify(post),
-                      // query: post
-                    });
+                      // query: JSON.stringify(post),
+                      query: post
+                      // 上記の書き方でないと1度のクリックで開けない
+                    })
                   }}
                   borderRadius="lg"
                   _hover={{
@@ -252,12 +252,10 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
                     key={post.id}
                   >
 
-                    <Box pl={2}
-                    >
+                    <Box pl={2}>
                       <MinusIcon
                         mr={3}
-                        fontSize
-                        ="11"
+                        fontSize="11"
                         color={colors[post.priority as 'High' | 'Middle' | 'Low']}
                       />
                       <a>{post.title}</a>
@@ -271,17 +269,20 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
                     {post.start ? new Date(post.start).toLocaleDateString() : ""}
                   </Box>
 
-
-                  <Box>
-                    <IconButton
-                      variant='outline'
-                      color='red.800'
-                      aria-label='DeleteIcon'
-                      border="0"
-                      onClick={() => handleDeletePost(post)}
-                      icon={<DeleteIcon />}
-                    />
-                  </Box>
+                  <Link
+                    href='../Tasks/All' passHref
+                  >
+                    <Box>
+                      <IconButton
+                        variant='outline'
+                        color='red.800'
+                        aria-label='DeleteIcon'
+                        border="0"
+                        onClick={() => handleDeletePost(post)}
+                        icon={<DeleteIcon />}
+                      />
+                    </Box>
+                  </Link>
 
                 </HStack >
               </>
