@@ -237,6 +237,7 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
                     setTodo(post)
                     router.push({
                       pathname: `/Tasks/All/${post.id}`,
+
                       query: JSON.stringify(post),
                       // query: post
                     });
