@@ -10,10 +10,10 @@ const Logout = () => {
   const router = useRouter();
 
   const handleLogout = async () => {
+    await router.push('/');
     await auth.signOut();
     setIsLogin(false);
     setUserItem({});
-    router.push('/');
   };
 
   return (
