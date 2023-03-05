@@ -1,18 +1,16 @@
-import { Box, Flex, Text, CloseButton, VStack } from '@chakra-ui/react';
+import { Box, Flex, Text, VStack } from '@chakra-ui/react';
 import { LinkItems } from '@constants';
 import { NavItem } from './NavItem';
 import { useRouter } from 'next/router';
-import { MouseEvent } from 'react';
 
 interface SidebarContentProps {
-  onClose: (_event: MouseEvent<HTMLButtonElement>) => void;
   filter: string;
 }
 
 // SidebarContent: 1層目
 // rest：1層目以外で受け取った他のプロパティをまとめたオブジェクト
 // filter：タスクのフィルター情報を表す変数
-export const SidebarContent = ({ onClose, filter, ...rest }: SidebarContentProps) => {
+export const SidebarContent = ({ filter, ...rest }: SidebarContentProps) => {
   const router = useRouter();
 
   return (
@@ -21,9 +19,8 @@ export const SidebarContent = ({ onClose, filter, ...rest }: SidebarContentProps
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <VStack>
-          <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">Tone</Text>
+          <Text fontSize="2xl" fontWeight="bold">Tone</Text>
         </VStack>
-        <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {/* LinkItems：リンク情報を保持したオブジェクト */}
       {LinkItems.map(link => (

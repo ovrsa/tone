@@ -237,8 +237,9 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
                     setTodo(post)
                     router.push({
                       pathname: `/Tasks/All/${post.id}`,
+
                       query: JSON.stringify(post),
-                      // search: `?${query}`,
+                      // query: post
                     });
                   }}
                   borderRadius="lg"
@@ -295,8 +296,8 @@ export const AllContent: React.VFC<Props> = ({ setTodo, filter, filterOption }) 
                     setTodo(post)
                     router.push({
                       pathname: `/Tasks/All/${post.id}`,
-                      query: JSON.stringify(post),
-                      // query: post
+                      // query: JSON.stringify(post),
+                      query: post
                       // 上記の書き方でないと1度のクリックで開けない
                     })
                   }}
