@@ -19,15 +19,23 @@ export const Detail: React.VFC<Props> = ({ todo, setTodo }) => {
 
   useEffect(() => {
     if (isReady) {
+      const date = new Date(query.start as string);
+      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}T${date
+          .getHours()
+          .toString()
+          .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
       setTodo({
         id: query.id as string,
         priority: query.priority as 'High' | 'Middle' | 'Low' | '',
-        start: query.start as string,
+        start: formattedDate,
         detail: query.detail as string,
-        title: query.title as string
+        title: query.title as string,
       });
     }
-  }, [isReady]);
+  }, [isReady, query.start, setTodo]);
+
 
   const postUpdateTask = async (e: React.FocusEvent<HTMLFormElement>) => {
     e.preventDefault();
