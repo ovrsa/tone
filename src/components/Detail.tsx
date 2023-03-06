@@ -36,7 +36,6 @@ export const Detail: React.VFC<Props> = ({ todo, setTodo }) => {
     }
   }, [isReady, query.start, setTodo]);
 
-
   const postUpdateTask = async (e: React.FocusEvent<HTMLFormElement>) => {
     e.preventDefault();
 
