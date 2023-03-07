@@ -116,7 +116,7 @@ export default function Signin() {
         </Stack>
         <Box
           rounded={'lg'}
-          bg={useColorModeValue('white', 'gray.700')}
+          bg={useColorModeValue('whiteAlpha.700', 'gray.700')}
           boxShadow={'lg'}
           w={'450px'}
           p={8}
@@ -126,7 +126,7 @@ export default function Signin() {
               <FormControl id="email">
                 <FormLabel>Email address</FormLabel>
                 <Input name="email" type="email" />
-              </FormControl>
+              </FormControl>  
               <FormControl id="password">
                 <FormLabel>Password</FormLabel>
                 <InputGroup>

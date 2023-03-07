@@ -24,7 +24,7 @@ const AllPage = () => {
         flexBasis={{ base: "100%", md: "12%" }}
         borderRight="1px"
         borderRightColor={useColorModeValue("gray.200", "gray.700")}
-        bg={useColorModeValue("white", "blackAlpha.700")}
+        bg={useColorModeValue("whiteAlpha.700", "blackAlpha.700")}
         display="flex"
         flexDir="column"
         justifyContent="space-between"
@@ -47,7 +47,7 @@ const AllPage = () => {
         borderRight="1px"
         w={{ base: "full", md: "20%" }}
         borderRightColor={useColorModeValue("gray.200", "gray.700")}
-        bg={useColorModeValue("white", "blackAlpha.600")}
+        bg={useColorModeValue("whiteAlpha.600", "blackAlpha.600")}
       >
         <MainBar
           filterOption={filterOption}
@@ -71,7 +71,7 @@ const AllPage = () => {
           width: "5px",
           scrollbarColor: "#000000 #ffffff",
         }}
-        bg={useColorModeValue("white", "blackAlpha.500")}
+        bg={useColorModeValue("whiteAlpha.500", "blackAlpha.500")}
       >
         <AllContent
           filterOption={filterOption}
@@ -84,11 +84,11 @@ const AllPage = () => {
         flexBasis={{ base: "100%", md: "35%" }}
         w={{ base: "full", md: "35%" }}
         p={2}
-        bg={useColorModeValue("white", "blackAlpha.500")}
+        bg={useColorModeValue("whiteAlpha.500", "blackAlpha.500")}
         display="flex"
         justifyContent="center"
         alignItems="center"
-          minH="100vh"
+        minH="100vh"
 
       >
         <Unselected />
