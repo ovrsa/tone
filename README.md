@@ -46,7 +46,7 @@ Google Workspaceの導入後、社員からのフィードバックにより、�
 | こちらのページからSignupかSigninに遷移 | メールアドレスかGoogleアカウントでログイン | メールアドレスかGoogleアカウントで新規登録 |
 | 予定追加 | フィルタリング1 | フィルタリング2 |
 | ![addTask](public/images/addTasks.jpg) | ![Filter](public/images/Filter.jpg) | ![Sort](public/images/Sort.jpg) |
-  | 予定のタイトルを入力してEnterキーを押すと下に追加される | 日程よって並び替え | 重要度によって並び替え |
+  | 予定のタイトルを入力してEnterキーを押すと下に追加される | 重要度によって並び替え | 日程よって並び替え |
 | 編集 | 日程の登録 |  |
 | ![Edit](public/images/Edit.jpg) | ![Calender](public/images/Calender.jpg) |  |
 | 登録されたタイトルを押すと編集画面が表れる、左上：重要度選択、右上：日程選択、title：タイトルを入力、deital：予定の詳細を入力 | カレンダーから日程の登録 |  |
